@@ -43,4 +43,19 @@ export class UserRepository {
       throw error;
     }
   }
+
+  public async getUserById(id:number): Promise<IUser | null> {
+    try {
+      const data = await this.prisma.user.findUnique({
+        where: {
+          id
+        }
+      })
+
+      return data as IUser | null
+      
+    } catch (error) {
+      throw error
+    }
+  }
 }

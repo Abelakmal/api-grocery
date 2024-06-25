@@ -1,8 +1,9 @@
 import { UserRepository } from "../../repository/UserRepository";
-import { IUser } from "../../types/user.type";
+import { IUser, IUserResponse } from "../../types/user.type";
 import { IUserService } from "../interfaces/IUserService";
 import { ApiError } from "../../error/ApiError";
 import { hashPassword } from "../../helper/bcrypt";
+import { excludeFields } from "../../helper/excludeFields";
 
 export class UserService implements IUserService {
   private userRepository: UserRepository;
@@ -21,7 +22,20 @@ export class UserService implements IUserService {
       user.password = await hashPassword(user.password);
 
       await this.userRepository.createUser(user);
-    } catch (error: any) {
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getService(id: number): Promise<IUserResponse> {
+    try {
+      const user = await this.userRepository.getUserById(id);
+      if (!user) {
+        throw new ApiError("User is Not Found", 404);
+      }
+      const data: IUserResponse = excludeFields(user, ["password"]);
+      return data;
+    } catch (error) {
       throw error;
     }
   }
