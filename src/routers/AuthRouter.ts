@@ -1,24 +1,25 @@
 import { Router } from "express";
-import { UserController } from "../controllers/UserController";
 import { registerValidator } from "../validator/userValidator";
 import { validate } from "../error/validate";
+import { AuthController } from "../controllers/AuthController";
+import { authValidator } from "../validator/authValidator";
 
-export class UserRouter {
+export class AuthRouter {
   private router: Router;
-  private userController: UserController;
+  private authController: AuthController;
 
   constructor() {
     this.router = Router();
-    this.userController = new UserController();
+    this.authController = new AuthController();
     this.initializeRouters();
   }
 
   private initializeRouters(): void {
     this.router.post(
-      "/",
-      registerValidator(),
+      "/login-users",
+      authValidator(),
       validate,
-      this.userController.registerUser.bind(this.userController)
+      this.authController.loginUser.bind(this.authController)
     );
   }
 

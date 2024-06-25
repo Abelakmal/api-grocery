@@ -11,6 +11,7 @@ import cors from "cors";
 import { TestRouter } from "./routers/TestRouter";
 import { UserRouter } from "./routers/UserRouter";
 import { ApiError } from "./error/ApiError";
+import { AuthRouter } from "./routers/AuthRouter";
 
 export class App {
   private app: Express;
@@ -31,9 +32,11 @@ export class App {
   private routes(): void {
     const router = new TestRouter();
     const userRouter = new UserRouter();
+    const authRouter = new AuthRouter();
 
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
+    this.app.use("/api/auth", authRouter.getRouter())
   }
 
   private handleError() {

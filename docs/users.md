@@ -34,15 +34,15 @@ Response Body (Failed) :
 }
 ```
 
-## Login
+## Login User
 
-Enpoint : POST api/auth
+Enpoint : POST api/auth/login-users
 
 Request body :
 
 ```json
 {
-  "email": "abel@mail.com", // "phone" : 085243364415
+  "email": "abel@mail.com",
   "password": "rahasia"
 }
 ```
