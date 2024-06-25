@@ -72,7 +72,7 @@ Enpoint : GET /api/users/current
 
 Request Header :
 
-- X-API-TOKEN : Token (Mandatory)
+- `Authorization: Bearer <token>` (Mandatory)
 
 Response Body (Success) :
 
@@ -103,7 +103,7 @@ Enpoint : PATCH /api/users
 
 Request Header :
 
-- X-API-TOKEN : Token (Mandatory)
+- `Authorization: Bearer <token>` (Mandatory)
 
 Request Body :
 
@@ -149,7 +149,7 @@ Enpoint : DELETE /api/auth/logout
 
 Request Header :
 
-- X-API-TOKEN : Token (Mandatory)
+- `Authorization: Bearer <token>` (Mandatory)
 
 
 Response Body (Success) :
