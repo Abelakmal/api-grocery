@@ -20,6 +20,7 @@ export class App {
     this.app = express();
     this.configure();
     this.routes();
+    this.handleNotFound()
     this.handleError();
   }
 
@@ -36,7 +37,17 @@ export class App {
 
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
-    this.app.use("/api/auth", authRouter.getRouter())
+    this.app.use("/api/auth", authRouter.getRouter());
+  }
+
+  private handleNotFound(): void {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.path.includes("/api/")) {
+        res.status(404).json({ error: "Not found" });
+      } else {
+        next();
+      }
+    });
   }
 
   private handleError() {
@@ -47,29 +58,8 @@ export class App {
             error: err.message,
           });
         } else {
-          console.log(err);     
-          next();
-        }
-      }
-    );
-
-    this.app.use(
-      (err: Error, req: Request, res: Response, next: NextFunction): void => {
-        if (req.path.includes("/api/")) {
-          res.status(404).send("Not found");
-        } else {
-          next();
-        }
-      }
-    );
-
-    this.app.use(
-      (err: Error, req: Request, res: Response, next: NextFunction) => {
-        if (req.path.includes("/api/")) {
-          console.error("Error : ", err.stack);
-          res.status(500).send(err.message);
-        } else {
-          next();
+          console.error("Error: ", err.stack);
+          res.status(500).json({ error: err.message });
         }
       }
     );
