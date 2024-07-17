@@ -44,18 +44,31 @@ export class UserRepository {
     }
   }
 
-  public async getUserById(id:number): Promise<IUser | null> {
+  public async getUserById(id: number): Promise<IUser | null> {
     try {
       const data = await this.prisma.user.findUnique({
         where: {
-          id
-        }
-      })
+          id,
+        },
+      });
 
-      return data as IUser | null
-      
+      return data as IUser | null;
     } catch (error) {
-      throw error
+      throw error;
+    }
+  }
+
+  public async updateUserById(id: number, data: IUser): Promise<IUser> {
+    try {
+      const result = await this.prisma.user.update({
+        where: {
+          id,
+        },
+        data,
+      });
+      return result as IUser;
+    } catch (error) {
+      throw error;
     }
   }
 }

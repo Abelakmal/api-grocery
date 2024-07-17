@@ -39,4 +39,26 @@ export class UserService implements IUserService {
       throw error;
     }
   }
+
+  public async updateService(id: number, data: IUser): Promise<IUserResponse> {
+    try {
+      const user = await this.userRepository.getUserById(id);
+
+      if (!user) {
+        throw new ApiError("User is Not Found", 404);
+      }
+
+      if (data.password) {
+        data.password = await hashPassword(data.password);
+      }
+
+      const update: IUser = await this.userRepository.updateUserById(id, data);
+
+      const result: IUserResponse = excludeFields(update, ["password"]);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

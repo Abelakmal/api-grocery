@@ -2,8 +2,9 @@ import { App } from "../../App";
 import { expect, describe, it, beforeAll, afterAll } from "bun:test";
 import request from "supertest";
 import { prisma } from "../helper/prisma";
-import { hashPassword } from "../../helper/bcrypt";
+import { comparePassword, hashPassword } from "../../helper/bcrypt";
 import { createToken } from "../../helper/jwt";
+import { password } from "bun";
 
 describe("User API", () => {
   let app: App;
@@ -58,5 +59,28 @@ describe("User API", () => {
       "error",
       "Authorization header is missing or malformed"
     );
+  });
+
+  it("should success update user", async () => {
+    const response = await request(app.getApp())
+      .patch("/api/users/")
+      .send({
+        name: "adminChange",
+        password: "admin12345",
+      })
+      .set("Authorization", `Bearer ${token}`);
+
+    const updateUser = await prisma.user.findUnique({
+      where: { id: response.body.data.id },
+    });
+
+    const isPasswordMatch: boolean = await comparePassword(
+      "admin12345",
+      updateUser?.password as string
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveProperty("name", "adminChange");
+    expect(isPasswordMatch).toBe(true);
   });
 });

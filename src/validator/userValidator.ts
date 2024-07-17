@@ -9,3 +9,13 @@ export const registerValidator = () => {
       .withMessage("Password must be at least 8 characters long"),
   ];
 };
+
+export const updateValidator = () => {
+  return [
+    body("email").optional().isEmail().withMessage("Invalid email format"),
+    body("password")
+      .optional()
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters long"),
+  ];
+};

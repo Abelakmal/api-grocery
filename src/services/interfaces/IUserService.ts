@@ -1,6 +1,7 @@
 import { IUser, IUserResponse } from "../../types/user.type";
 
 export interface IUserService {
-    registerService(user:IUser): Promise<void>;
-    getService(id:number): Promise<IUserResponse>;
+  registerService(user: IUser): Promise<void>;
+  getService(id: number): Promise<IUserResponse>;
+  updateService(id: number, data: IUser): Promise<IUserResponse>;
 }
