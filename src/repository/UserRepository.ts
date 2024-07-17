@@ -18,14 +18,14 @@ export class UserRepository {
     }
   }
 
-  public async getUserByEmail(email: string): Promise<IUser | null> {
+  public async getUserByEmail(email: string): Promise<IUser> {
     try {
       const data = await this.prisma.user.findUnique({
         where: {
           email,
         },
       });
-      return data as IUser | null;
+      return data as IUser;
     } catch (error) {
       throw error;
     }

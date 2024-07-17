@@ -11,11 +11,20 @@ export class AuthService implements IAuthService {
   constructor() {
     this.userRepository = new UserRepository();
   }
-  public async loginUserService(email: string, password: string): Promise<ILogin> {
+  public async loginUserService(
+    email: string,
+    password: string
+  ): Promise<ILogin> {
     try {
       const user = await this.userRepository.getUserByEmail(email);
 
-      if (!user || (await comparePassword(password, user?.password))) {
+      if (!user) {
+        throw new ApiError("Email or Password is wrong", 401);
+      }
+
+      const checkPassword = await comparePassword(password, user?.password);
+
+      if (!checkPassword) {
         throw new ApiError("Email or Password is wrong", 401);
       }
 
