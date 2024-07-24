@@ -2,6 +2,7 @@ import { App } from "../../App";
 import { expect, describe, it, beforeAll, afterAll } from "bun:test";
 import request from "supertest";
 import { prisma } from "../helper/prisma";
+import { hashPassword } from "../../helper/bcrypt";
 
 describe("Auth API", () => {
   let app: App;
@@ -9,11 +10,12 @@ describe("Auth API", () => {
   beforeAll(async () => {
     app = new App();
     await prisma.user.deleteMany({});
+    const password:string = await hashPassword("rahasia123")
     await prisma.user.create({
       data: {
         name: "test",
         email: "test@mail.com",
-        password: "rahasia123",
+        password
       },
     });
   });
@@ -27,6 +29,7 @@ describe("Auth API", () => {
       email: "test@mail.com",
       password: "rahasia123",
     });
+    
     expect(response.status).toBe(200);
     expect(response.body.data).toHaveProperty("token")
   });
