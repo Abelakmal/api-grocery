@@ -50,7 +50,7 @@ export class UserService implements IUserService {
 
       const checkEmail = await this.userRepository.getUserByEmail(data.email)
 
-      if(checkEmail){
+      if(checkEmail && user.email !== data.email){
         throw new ApiError("Email is already in use",409)
       }
 
