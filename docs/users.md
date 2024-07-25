@@ -8,8 +8,7 @@ Request Body :
 
 ```json
 {
-  "firstName": "Abel",
-  "lastName": "Akmal", // optional
+  "name": "Abel",
   "dob": "yyyy-mm-dd", // optional
   "email": "abel@mail.com",
   "phone": 085243364415,
@@ -79,8 +78,7 @@ Response Body (Success) :
 ```json
 {
   "data": {
-    "firstName": "Abel",
-    "lastName": "Akmal",
+    "name": "Abel",
     "dob": "yyyy-mm-dd",
     "email": "abel@mail.com",
     "phone": 085243364415,
@@ -109,8 +107,7 @@ Request Body :
 
 ```json
 {
-  "firstName": "Abel", // optional
-  "lastName": "Akmal", // optional
+  "name": "Abel", // optional
   "dob": "yyyy-mm-dd", // optional
   "email": "abel@mail.com", //optional
   "phone": 085243364415, // optional
@@ -124,8 +121,7 @@ Response Body (Success) :
 ```json
 {
   "data": {
-    "firstName": "Abel",
-    "lastName": "Akmal",
+    "name": "Abel",
     "dob": "yyyy-mm-dd",
     "email": "abel@mail.com",
     "phone": 085243364415,
