@@ -28,5 +28,5 @@ model User {
   phone Int? @unique
   address String?
   password String
-
+  image String?
 }

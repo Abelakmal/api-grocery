@@ -82,7 +82,8 @@ Response Body (Success) :
     "dob": "yyyy-mm-dd",
     "email": "abel@mail.com",
     "phone": 085243364415,
-    "address": "batam"
+    "address": "batam",
+    "image": "url:img",
   }
 }
 ```
@@ -112,7 +113,8 @@ Request Body :
   "email": "abel@mail.com", //optional
   "phone": 085243364415, // optional
   "address": "batam", // optional
-  "password": "rahasia" //optional
+  "password": "rahasia", //optional
+  "image": "url:img", //optional
 }
 ```
 
@@ -125,7 +127,8 @@ Response Body (Success) :
     "dob": "yyyy-mm-dd",
     "email": "abel@mail.com",
     "phone": 085243364415,
-    "address": "batam"
+    "address": "batam",
+    "image": "url:newimg",
   }
 }
 ```
