@@ -48,6 +48,12 @@ export class UserService implements IUserService {
         throw new ApiError("User is Not Found", 404);
       }
 
+      const checkEmail = await this.userRepository.getUserByEmail(data.email)
+
+      if(checkEmail){
+        throw new ApiError("Email is already in use",409)
+      }
+
       if (data.password) {
         data.password = await hashPassword(data.password);
       }
