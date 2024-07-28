@@ -42,6 +42,10 @@ export class App {
     const userRouter = new UserRouter();
     const authRouter = new AuthRouter();
 
+    this.app.use(
+      '/api/media/users',
+      express.static(__dirname + '/images/users'),
+    );
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());

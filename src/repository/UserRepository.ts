@@ -31,7 +31,7 @@ export class UserRepository {
     }
   }
 
-  public async getUserByPhone(phone: number): Promise<IUser | null> {
+  public async getUserByPhone(phone: string): Promise<IUser | null> {
     try {
       const data = await this.prisma.user.findUnique({
         where: {

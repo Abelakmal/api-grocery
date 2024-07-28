@@ -3,6 +3,7 @@ import { UserController } from "../controllers/UserController";
 import { registerValidator, updateValidator } from "../validator/userValidator";
 import { validate } from "../error/validate";
 import { verifyToken } from "../helper/jwt";
+import { upload } from "../helper/multer";
 
 export class UserRouter {
   private router: Router;
@@ -33,6 +34,13 @@ export class UserRouter {
       updateValidator(),
       validate,
       this.userController.updateUser.bind(this.userController)
+    );
+
+    this.router.patch(
+      "/img",
+      verifyToken,
+      upload("users"),
+      this.userController.updateImg.bind(this.userController)
     );
   }
 

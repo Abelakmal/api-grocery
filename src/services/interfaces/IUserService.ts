@@ -4,4 +4,5 @@ export interface IUserService {
   registerService(user: IUser): Promise<void>;
   getService(id: number): Promise<IUserResponse>;
   updateService(id: number, data: IUser): Promise<IUserResponse>;
+  updateImgService(id: number, img: string): Promise<void>;
 }
