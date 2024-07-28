@@ -3,11 +3,11 @@ export interface IUser {
   name: string;
   dob: Date;
   email: string;
-  phone: number;
+  phone: string;
   address: string;
   password: string;
+  image: string;
 }
-
 
 export interface IUserResponse {
   id: number;

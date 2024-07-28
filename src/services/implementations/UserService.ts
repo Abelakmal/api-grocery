@@ -48,10 +48,10 @@ export class UserService implements IUserService {
         throw new ApiError("User is Not Found", 404);
       }
 
-      const checkEmail = await this.userRepository.getUserByEmail(data.email)
+      const checkEmail = await this.userRepository.getUserByEmail(data.email);
 
-      if(checkEmail && user.email !== data.email){
-        throw new ApiError("Email is already in use",409)
+      if (checkEmail && user.email !== data.email) {
+        throw new ApiError("Email is already in use", 409);
       }
 
       if (data.password) {
@@ -63,6 +63,22 @@ export class UserService implements IUserService {
       const result: IUserResponse = excludeFields(update, ["password"]);
 
       return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updateImgService(id: number, img: string): Promise<void> {
+    try {
+      const user = await this.userRepository.getUserById(id);
+      if (!user) {
+        throw new ApiError("User Id is not found", 404);
+      }
+      console.log(img);
+      
+      const image = `${process.env.API_URL}/media/users/${img}`;
+      user.image = image;
+      await this.userRepository.updateUserById(id, user);
     } catch (error) {
       throw error;
     }
