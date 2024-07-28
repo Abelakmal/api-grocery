@@ -179,3 +179,4 @@ dist
 
 src/images/users/*
 !src/images/users/
+!src/images/users/images-1722195049750.jpg
