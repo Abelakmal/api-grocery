@@ -12,6 +12,7 @@ import { TestRouter } from "./routers/TestRouter";
 import { UserRouter } from "./routers/UserRouter";
 import { ApiError } from "./error/ApiError";
 import { AuthRouter } from "./routers/AuthRouter";
+const cookieParser = require("cookie-parser");
 
 export class App {
   private app: Express;
@@ -20,14 +21,20 @@ export class App {
     this.app = express();
     this.configure();
     this.routes();
-    this.handleNotFound()
+    this.handleNotFound();
     this.handleError();
   }
 
   private configure(): void {
-    this.app.use(cors());
+    this.app.use(
+      cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+      })
+    );
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
+    this.app.use(cookieParser());
   }
 
   private routes(): void {

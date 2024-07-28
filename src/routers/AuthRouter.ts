@@ -21,6 +21,10 @@ export class AuthRouter {
       validate,
       this.authController.loginUser.bind(this.authController)
     );
+    this.router.post(
+      "/refreshToken",
+      this.authController.refreshToken.bind(this.authController)
+    );
   }
 
   public getRouter(): Router {

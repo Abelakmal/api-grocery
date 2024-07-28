@@ -1,3 +1,4 @@
 export interface ILogin {
-    token :string
+  token: string;
+  refreshToken: string;
 }
