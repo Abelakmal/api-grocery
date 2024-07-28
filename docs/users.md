@@ -56,6 +56,12 @@ Response Body (Success) :
 }
 ```
 
+Response Cookie :
+
+```cookie
+ refreshToken(key): "fsfsfweoifwof"(value)
+```
+
 Response Body (Failed) :
 
 ```json
@@ -64,10 +70,37 @@ Response Body (Failed) :
 }
 ```
 
+## Refresh Token
+
+Request Cookie : `refreshToken`
+
+Response Body (Success) :
+
+```json
+{
+  "data": {
+    "token": "eadiajdadjd292odj29d9d1hd91f2f2"
+  }
+}
+```
+
+Response Cookie :
+
+```cookie
+ refreshToken(key): "fsfsfweoifwof"(value)
+```
+
+Response Body (Failed) :
+
+```json
+{
+  "error": "Invalid Token"
+}
+```
+
 ## Get User
 
 Enpoint : GET /api/users/current
-
 
 Request Header :
 
@@ -83,7 +116,7 @@ Response Body (Success) :
     "email": "abel@mail.com",
     "phone": 085243364415,
     "address": "batam",
-    "image": "url:img",
+    "image": "url:img"
   }
 }
 ```
@@ -114,7 +147,7 @@ Request Body :
   "phone": 085243364415, // optional
   "address": "batam", // optional
   "password": "rahasia", //optional
-  "image": "url:img", //optional
+  "image": "url:img" //optional
 }
 ```
 
@@ -128,7 +161,7 @@ Response Body (Success) :
     "email": "abel@mail.com",
     "phone": 085243364415,
     "address": "batam",
-    "image": "url:newimg",
+    "image": "url:newimg"
   }
 }
 ```
@@ -145,11 +178,9 @@ Response Body (Failed) :
 
 Enpoint : DELETE /api/auth/logout
 
-
 Request Header :
 
 - `Authorization: Bearer <token>` (Mandatory)
-
 
 Response Body (Success) :
 
@@ -158,7 +189,6 @@ Response Body (Success) :
   "data": "ok"
 }
 ```
-
 
 Response Body (Failed) :
 

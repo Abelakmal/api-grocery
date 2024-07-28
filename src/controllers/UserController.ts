@@ -29,7 +29,6 @@ export class UserController {
     try {
       const id = req.user?.id;
       const data = await this.userService.getService(id as number);
-
       res.status(200).json({
         data
       });

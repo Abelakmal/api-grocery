@@ -1,5 +1,7 @@
-import { UserRepository } from "../../repository/UserRepository"
+import { UserRepository } from "../../repository/UserRepository";
+import { ILogin } from "../../types/login.type";
 
 export interface IAuthService {
-    loginUserService (email: string, password: string) : Promise<Object>
+  loginUserService(email: string, password: string): Promise<ILogin>;
+  refreshTokenService(refreshToken: string): Promise<ILogin>;
 }
