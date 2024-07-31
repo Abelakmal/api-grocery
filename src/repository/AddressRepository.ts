@@ -41,6 +41,11 @@ export class AddressRepository {
         where: {
           userId,
         },
+        orderBy: [
+            {
+                main: 'desc'
+            }
+        ]
       });
       return data;
     } catch (error) {
