@@ -12,10 +12,10 @@ Request Body :
 
 ```json
 {
-  "address_label": "Abel",
-  "detailed_address": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
-  "recipient_name": "abel",
-  "recipient_number": "085243364415",
+  "label": "Abel",
+  "address": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
+  "name": "abel",
+  "number": "085243364415",
   "latitude": "12.004034",
   "longitude": "12.0095155",
   "main": true
@@ -52,8 +52,8 @@ Response Body (Success) :
 {
   "data": [
     {
-      "address_label": "Abel",
-      "detailed address": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
+      "label": "Abel",
+      "details": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
       "recipient_name": "abel",
       "recipient number": "085243364415",
       "latitude": "12.004034",
@@ -84,8 +84,8 @@ Request Body :
 
 ```json
 {
-  "address_label": "Abel",
-  "detailed address": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
+  "label": "Abel",
+  "details": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
   "recipient_name": "abel",
   "recipient number": "085243364415",
   "latitude": "12.004034",
@@ -99,8 +99,8 @@ Response Body (Success) :
 ```json
 {
   "data": {
-  "address_label": "rumah",
-  "detailed address": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
+  "label": "rumah",
+  "details": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
   "recipient_name": "abel",
   "recipient number": "085243364415",
   "latitude": "12.004034",
