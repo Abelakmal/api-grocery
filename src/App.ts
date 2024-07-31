@@ -12,6 +12,7 @@ import { TestRouter } from "./routers/TestRouter";
 import { UserRouter } from "./routers/UserRouter";
 import { ApiError } from "./error/ApiError";
 import { AuthRouter } from "./routers/AuthRouter";
+import { AddressRouter } from "./routers/AddressRouter";
 const cookieParser = require("cookie-parser");
 
 export class App {
@@ -41,14 +42,16 @@ export class App {
     const router = new TestRouter();
     const userRouter = new UserRouter();
     const authRouter = new AuthRouter();
+    const addressRouter = new AddressRouter();
 
     this.app.use(
-      '/api/media/users',
-      express.static(__dirname + '/images/users'),
+      "/api/media/users",
+      express.static(__dirname + "/images/users")
     );
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());
+    this.app.use("/api/address", addressRouter.getRouter());
   }
 
   private handleNotFound(): void {
