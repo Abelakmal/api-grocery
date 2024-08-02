@@ -1,5 +1,5 @@
 import { ApiError } from "../../error/ApiError";
-import { AddressRepository } from "../../repository/AddressRepository";
+import { AddressRepository } from "../../repository/prisma/AddressRepository";
 import { IAddress } from "../../types/address.type";
 import { IAddressService } from "../interfaces/IAddressService";
 

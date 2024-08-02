@@ -52,6 +52,7 @@ Response Body (Success) :
 {
   "data": [
     {
+      "id": 1,
       "label": "Abel",
       "details": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
       "recipient_name": "abel",
@@ -60,7 +61,7 @@ Response Body (Success) :
       "longitude": "12.0095155",
       "main": true,
       "userId": 1
-    },
+    }
   ]
 }
 ```
@@ -74,6 +75,7 @@ Response Body (Failed) :
 ```
 
 ## Update Address
+
 Enpoint : PUT /api/address
 
 Request Header :
@@ -99,14 +101,15 @@ Response Body (Success) :
 ```json
 {
   "data": {
-  "label": "rumah",
-  "details": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
-  "recipient_name": "abel",
-  "recipient number": "085243364415",
-  "latitude": "12.004034",
-  "longitude": "12.0095155",
-  "main": true
-}
+    "id": 1,
+    "label": "rumah",
+    "details": "Baloi Permai, Batam City, Riau Islands, Sumatra, 29463, Indonesia",
+    "recipient_name": "abel",
+    "recipient number": "085243364415",
+    "latitude": "12.004034",
+    "longitude": "12.0095155",
+    "main": true
+  }
 }
 ```
 
@@ -118,7 +121,6 @@ Response Body (Failed) :
 }
 ```
 
-
 ## Update Main Address
 
 Enpoint : POST /api/address/:id/main
@@ -126,7 +128,6 @@ Enpoint : POST /api/address/:id/main
 Request Header :
 
 - `Authorization: Bearer <token>` (Mandatory)
-
 
 Response Body (Success) :
 
@@ -151,7 +152,6 @@ Enpoint : DELETE /api/address/:id
 Request Header :
 
 - `Authorization: Bearer <token>` (Mandatory)
-
 
 Response Body (Success) :
 

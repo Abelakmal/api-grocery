@@ -1,9 +1,9 @@
-import { UserRepository } from "../../repository/UserRepository";
 import { IUser, IUserResponse } from "../../types/user.type";
 import { IUserService } from "../interfaces/IUserService";
 import { ApiError } from "../../error/ApiError";
 import { hashPassword } from "../../helper/bcrypt";
 import { excludeFields } from "../../helper/excludeFields";
+import { UserRepository } from "../../repository/prisma/UserRepository";
 
 export class UserService implements IUserService {
   private userRepository: UserRepository;
@@ -74,8 +74,7 @@ export class UserService implements IUserService {
       if (!user) {
         throw new ApiError("User Id is not found", 404);
       }
-      console.log(img);
-      
+
       const image = `${process.env.API_URL}/media/users/${img}`;
       user.image = image;
       await this.userRepository.updateUserById(id, user);
