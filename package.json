@@ -18,6 +18,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.14.0",
     "@prisma/client": "^5.15.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",

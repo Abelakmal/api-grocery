@@ -13,6 +13,7 @@ import { UserRouter } from "./routers/UserRouter";
 import { ApiError } from "./error/ApiError";
 import { AuthRouter } from "./routers/AuthRouter";
 import { AddressRouter } from "./routers/AddressRouter";
+import { ProductRouter } from "./routers/ProductRouter";
 const cookieParser = require("cookie-parser");
 
 export class App {
@@ -27,6 +28,9 @@ export class App {
   }
 
   private configure(): void {
+    (BigInt.prototype as any).toJSON = function () {
+      return this.toString();
+    };
     this.app.use(
       cors({
         origin: "http://localhost:5173",
@@ -43,15 +47,21 @@ export class App {
     const userRouter = new UserRouter();
     const authRouter = new AuthRouter();
     const addressRouter = new AddressRouter();
+    const productRouter = new ProductRouter();
 
     this.app.use(
       "/api/media/users",
       express.static(__dirname + "/images/users")
     );
+    this.app.use(
+      "/api/media/products",
+      express.static(__dirname + "/images/products")
+    );
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());
     this.app.use("/api/address", addressRouter.getRouter());
+    this.app.use("/api/product", productRouter.getRouter());
   }
 
   private handleNotFound(): void {

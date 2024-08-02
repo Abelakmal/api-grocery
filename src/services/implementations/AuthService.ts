@@ -1,5 +1,4 @@
 import { IAuthService } from "../interfaces/IAuthService";
-import { UserRepository } from "../../repository/UserRepository";
 import { ApiError } from "../../error/ApiError";
 import { comparePassword } from "../../helper/bcrypt";
 import {
@@ -8,6 +7,7 @@ import {
   verifyRefreshToken,
 } from "../../helper/jwt";
 import { ILogin } from "../../types/login.type";
+import { UserRepository } from "../../repository/prisma/UserRepository";
 
 export class AuthService implements IAuthService {
   private userRepository: UserRepository;
