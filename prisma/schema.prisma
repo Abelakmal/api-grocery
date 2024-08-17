@@ -23,6 +23,7 @@ model User {
   password  String
   image     String?
   addresses Address[]
+  cart Cart[]
 }
 
 model Address {
@@ -48,6 +49,7 @@ model Product {
   price       BigInt
   categoryId  Int
   category    Category   @relation(fields: [categoryId], references: [id])
+  cart Cart[]
 }
 
 model Category {
@@ -60,4 +62,16 @@ model Category {
 enum UnitWeight {
   KG
   GRAM
+}
+
+
+model Cart {
+  id Int @id @default(autoincrement())
+  user_id Int @unique
+  product_id Int 
+  quantity Int
+  price_at_time Decimal
+
+  user User @relation(fields: [user_id],references: [id])
+  product Product @relation(fields: [product_id] ,references: [id])
 }

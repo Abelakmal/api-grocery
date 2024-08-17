@@ -15,6 +15,7 @@ import { AuthRouter } from "./routers/AuthRouter";
 import { AddressRouter } from "./routers/AddressRouter";
 import { ProductRouter } from "./routers/ProductRouter";
 import { CategoryRouter } from "./routers/CategoryRouter";
+import { CartRouter } from "./routers/CartRouter";
 const cookieParser = require("cookie-parser");
 
 export class App {
@@ -50,6 +51,7 @@ export class App {
     const addressRouter = new AddressRouter();
     const productRouter = new ProductRouter();
     const categoryRouter = new CategoryRouter()
+    const cartRouter =  new CartRouter()
 
     this.app.use(
       "/api/media/users",
@@ -69,6 +71,7 @@ export class App {
     this.app.use("/api/address", addressRouter.getRouter());
     this.app.use("/api/product", productRouter.getRouter());
     this.app.use("/api/category", categoryRouter.getRouter())
+    this.app.use("/api/cart", cartRouter.getRouter())
   }
 
   private handleNotFound(): void {
