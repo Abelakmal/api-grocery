@@ -3,7 +3,7 @@ import { UserController } from "../controllers/UserController";
 import { registerValidator, updateValidator } from "../validator/userValidator";
 import { validate } from "../error/validate";
 import { verifyToken } from "../helper/jwt";
-import { upload } from "../helper/multer";
+import { upload } from "../middleware/multer";
 
 export class UserRouter {
   private router: Router;

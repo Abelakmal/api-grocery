@@ -19,6 +19,10 @@ export class UserService implements IUserService {
         throw new ApiError("Email already exists", 400);
       }
 
+      if(user.dob){
+        user.dob = new Date(user.dob)
+      }
+
       user.password = await hashPassword(user.password);
 
       await this.userRepository.createUser(user);

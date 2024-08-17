@@ -28,27 +28,42 @@ export class ProductRepository {
     sort: string
   ): Promise<IProduct[]> {
     try {
+      let categoryFilter = "";
+      if (filter.category1 || filter.category2 || filter.category3) {
+        categoryFilter = `
+          AND (
+            ${filter.category1 ? `p."categoryId" = ${filter.category1}` : ""}
+            ${
+              filter.category1 && (filter.category2 || filter.category3)
+                ? "OR"
+                : ""
+            }
+            ${filter.category2 ? `p."categoryId" = ${filter.category2}` : ""}
+            ${filter.category2 && filter.category3 ? "OR" : ""}
+            ${filter.category3 ? `p."categoryId" = ${filter.category3}` : ""}
+          )
+        `;
+      }
+
       const result: any = await this.prisma.$queryRaw`
-        SELECT 
-          p."id", 
-          p."name", 
-          p."description", 
-          p."weight", 
-          p."unitWeight", 
-          p."image", 
-          p."price", 
-          p."categoryId", 
-          p."stock", 
-          c."id" AS "categoryId", 
-          c."name" AS "categoryName", 
-          c."image" AS "categoryImage"
-        FROM "Product" AS p 
-        INNER JOIN "Category" AS c ON p."categoryId" = c."id" 
-        WHERE LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%' 
-        OR (p."categoryId" = ${filter.category1} 
-            OR p."categoryId" = ${filter.category2} 
-            OR p."categoryId" = ${filter.category3}) 
-        ${Prisma.raw(sort)}`;
+      SELECT 
+        p."id", 
+        p."name", 
+        p."description", 
+        p."weight", 
+        p."unitWeight", 
+        p."image", 
+        p."price", 
+        p."categoryId", 
+        c."id" AS "categoryId", 
+        c."name" AS "categoryName", 
+        c."image" AS "categoryImage"
+      FROM "Product" AS p 
+      INNER JOIN "Category" AS c ON p."categoryId" = c."id" 
+      WHERE LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%'
+      ${Prisma.raw(categoryFilter)}
+      ${Prisma.raw(sort)}
+    `;
 
       const groupedResults = result.map((item: any) => ({
         id: item.id,
@@ -59,6 +74,7 @@ export class ProductRepository {
         image: item.image,
         price: item.price,
         stock: item.stock,
+        categoryId: item.categoryId,
         category: {
           id: item.categoryId,
           name: item.categoryName,

@@ -8,5 +8,4 @@ export interface IProduct {
   image: string;
   price: bigint;
   categoryId: number;
-  stock: number;
 }
