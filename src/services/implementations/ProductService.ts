@@ -43,6 +43,7 @@ export class ProductService implements IProductService {
       if (query.category3) {
         filterCategory.category3 = parseInt(query.category3 as string, 0);
       }
+      
 
       let sort;
 
@@ -68,6 +69,7 @@ export class ProductService implements IProductService {
         filterCategory,
         sort
       );
+      
       return data;
     } catch (error) {
       throw error;

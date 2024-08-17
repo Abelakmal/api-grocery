@@ -1,4 +1,3 @@
-import { UserRepository } from "../../repository/UserRepository";
 import { ILogin } from "../../types/login.type";
 
 export interface IAuthService {

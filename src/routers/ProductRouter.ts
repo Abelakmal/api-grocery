@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ProductController } from "../controllers/ProductController";
-import { upload } from "../helper/multer";
+import { upload } from "../middleware/multer";
 import { convertToInt } from "../middleware/convertToInt";
 
 export class ProductRouter {
