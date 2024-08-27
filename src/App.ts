@@ -6,7 +6,7 @@ import express, {
   Response,
   urlencoded,
 } from "express";
-import { PORT } from "./helper/config";
+import { clientUrl, PORT } from "./helper/config";
 import cors from "cors";
 import { TestRouter } from "./routers/TestRouter";
 import { UserRouter } from "./routers/UserRouter";
@@ -38,7 +38,7 @@ export class App {
     };
     this.app.use(
       cors({
-        origin: ["http://localhost:5173", "http://groceriashop.online/"],
+        origin: clientUrl,
         credentials: true,
       })
     );
