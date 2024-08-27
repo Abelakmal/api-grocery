@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -13,8 +8,157 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Test {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  dob       DateTime?
+  email     String    @unique
+  phone     String?   @unique
+  address   String?
+  password  String
+  image     String?
+  addresses Address[]
+  transaction Transaction[]
+  cart Cart[]
+}
+
+model Address {
+  id               Int     @id @default(autoincrement())
+  label            String
+  details          String
+  recipient_name   String
+  recipient_number String
+  latitude         String
+  longitude        String
+  main             Boolean @default(false)
+  userId           Int
+  user             User    @relation(fields: [userId], references: [id])
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  weight      Int
+  unitWeight  UnitWeight
+  image       String
+  price       BigInt
+  categoryId  Int
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  category    Category   @relation(fields: [categoryId], references: [id])
+  cart Cart[]
+  stock Stock[]
+  transactionItem TransactionsItem[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  image    String
+  products Product[]
+}
+
+enum UnitWeight {
+  KG
+  GRAM
+}
+
+
+model Cart {
   id Int @id @default(autoincrement())
-  name String 
+  user_id Int @unique
+  product_id Int 
+  quantity Int
+  price_at_time Int
+
+  user User @relation(fields: [user_id],references: [id])
+  product Product @relation(fields: [product_id] ,references: [id])
+}
+
+
+model StoreBranch {
+  id Int @id @default(autoincrement())
+  name String
+  location String
+  latitude String
+  longitude String
+  admin Admin[]
+  stock Stock[]
+}
+
+model Admin {
+  id            Int          @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password      String 
+  storeId       Int?
+  store_branch StoreBranch? @relation(fields: [storeId], references: [id])
+  isSuper       Boolean      @default(false)
+}
+
+
+model Stock {
+  id          Int            @id @default(autoincrement())
+  amount      Int
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  productId   Int
+  product     Product        @relation(fields: [productId], references: [id])
+  branchId    Int
+  storeBranch StoreBranch   @relation(fields: [branchId], references: [id])
+  stockChange StockChange[]
+}
+
+model StockChange {
+  id          Int      @id @default(autoincrement())
+  stockBefore Int
+  stockAfter  Int
+  createdAt   DateTime @default(now())
+  stockId     Int
+  stock       Stock    @relation(fields: [stockId], references: [id])
+}
+
+
+model Transaction {
+  id                 String              @id @db.VarChar(110)
+  total              Int
+  status             transactions_status
+  userId Int
+  snap_token         String?             @db.VarChar(255)
+  snap_redirect_url  String?             @db.VarChar(255)
+  payment_method     String?             @db.VarChar(110)
+  created_at         DateTime?           @default(now()) @db.Timestamp(0)
+  updated_at         DateTime?           @default(now()) @db.Timestamp(0)
+  user User @relation(fields: [userId] , references: [id])
+  transactions_items TransactionsItem[]
+
+  @@map("transactions")
+}
+
+model TransactionsItem {
+  id             String      @id @db.VarChar(110)
+  transaction_id String      @db.VarChar(110)
+  product_id     Int
+  price          Int
+  quantity       Int
+  created_at     DateTime?   @default(now()) @db.Timestamp(0)
+  updated_at     DateTime?   @default(now()) @db.Timestamp(0)
+  transactions   Transaction @relation(fields: [transaction_id], references: [id], onUpdate: Restrict, map: "transactions_items_ibfk_1")
+  products       Product     @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "transactions_items_ibfk_2")
+
+  @@index([product_id], map: "product_id")
+  @@index([transaction_id], map: "transaction_id")
+  @@map("transactions_items")
+}
+
+enum transactions_status {
+  PENDING_PAYMENT
+  PAID
+  CANCELED
 }

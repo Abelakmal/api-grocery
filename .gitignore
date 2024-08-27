@@ -173,3 +173,12 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+
+#img 
+
+src/images/users/*
+!src/images/users/
+!src/images/users/images-1722195049750.jpg
+src/images/products/*
+!src/images/products/

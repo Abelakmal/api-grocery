@@ -16,8 +16,8 @@ create .env file with data :
 
 ```env
 API_PORT=3000
-
 DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+JWT_SECRET_KEY="dnwkfnoi2fn2fnsofnodqdjq"
  ```
 
 Run prisma: 

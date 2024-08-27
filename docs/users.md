@@ -8,8 +8,7 @@ Request Body :
 
 ```json
 {
-  "firstName": "Abel",
-  "lastName": "Akmal", // optional
+  "name": "Abel",
   "dob": "yyyy-mm-dd", // optional
   "email": "abel@mail.com",
   "phone": 085243364415,
@@ -34,15 +33,15 @@ Response Body (Failed) :
 }
 ```
 
-## Login
+## Login User
 
-Enpoint : POST api/auth
+Enpoint : POST api/auth/login-users
 
 Request body :
 
 ```json
 {
-  "email": "abel@mail.com", // "phone" : 085243364415
+  "email": "abel@mail.com",
   "password": "rahasia"
 }
 ```
@@ -57,6 +56,12 @@ Response Body (Success) :
 }
 ```
 
+Response Cookie :
+
+```cookie
+ refreshToken(key): "fsfsfweoifwof"(value)
+```
+
 Response Body (Failed) :
 
 ```json
@@ -65,26 +70,53 @@ Response Body (Failed) :
 }
 ```
 
-## Get User
+## Refresh Token
 
-Enpoint : GET /api/users/current
-
-
-Request Header :
-
-- X-API-TOKEN : Token (Mandatory)
+Request Cookie : `refreshToken`
 
 Response Body (Success) :
 
 ```json
 {
   "data": {
-    "firstName": "Abel",
-    "lastName": "Akmal",
+    "token": "eadiajdadjd292odj29d9d1hd91f2f2"
+  }
+}
+```
+
+Response Cookie :
+
+```cookie
+ refreshToken(key): "fsfsfweoifwof"(value)
+```
+
+Response Body (Failed) :
+
+```json
+{
+  "error": "Invalid Token"
+}
+```
+
+## Get User
+
+Enpoint : GET /api/users/current
+
+Request Header :
+
+- `Authorization: Bearer <token>` (Mandatory)
+
+Response Body (Success) :
+
+```json
+{
+  "data": {
+    "name": "Abel",
     "dob": "yyyy-mm-dd",
     "email": "abel@mail.com",
     "phone": 085243364415,
-    "address": "batam"
+    "address": "batam",
+    "image": "url:img"
   }
 }
 ```
@@ -103,19 +135,19 @@ Enpoint : PATCH /api/users
 
 Request Header :
 
-- X-API-TOKEN : Token (Mandatory)
+- `Authorization: Bearer <token>` (Mandatory)
 
 Request Body :
 
 ```json
 {
-  "firstName": "Abel", // optional
-  "lastName": "Akmal", // optional
+  "name": "Abel", // optional
   "dob": "yyyy-mm-dd", // optional
   "email": "abel@mail.com", //optional
   "phone": 085243364415, // optional
   "address": "batam", // optional
-  "password": "rahasia" //optional
+  "password": "rahasia", //optional
+  "image": "url:img" //optional
 }
 ```
 
@@ -124,12 +156,12 @@ Response Body (Success) :
 ```json
 {
   "data": {
-    "firstName": "Abel",
-    "lastName": "Akmal",
+    "name": "Abel",
     "dob": "yyyy-mm-dd",
     "email": "abel@mail.com",
     "phone": 085243364415,
-    "address": "batam"
+    "address": "batam",
+    "image": "url:newimg"
   }
 }
 ```
@@ -146,11 +178,9 @@ Response Body (Failed) :
 
 Enpoint : DELETE /api/auth/logout
 
-
 Request Header :
 
-- X-API-TOKEN : Token (Mandatory)
-
+- `Authorization: Bearer <token>` (Mandatory)
 
 Response Body (Success) :
 
@@ -159,7 +189,6 @@ Response Body (Success) :
   "data": "ok"
 }
 ```
-
 
 Response Body (Failed) :
 
