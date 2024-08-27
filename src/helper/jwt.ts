@@ -11,7 +11,7 @@ interface PayloadToken {
 }
 
 export const createToken = (data: PayloadToken) => {
-  const expiresIn = "1m";
+  const expiresIn = "1d";
   return jwt.sign(data, secretKey, { expiresIn });
 };
 
