@@ -17,7 +17,10 @@ export class AuthController {
         password
       );
       res
-        .cookie("refreshToken", result.refreshToken)
+        .cookie("refreshToken", result.refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+        })
         .status(200)
         .json({
           data: {
@@ -37,7 +40,10 @@ export class AuthController {
         password
       );
       res
-        .cookie("refreshToken", result.refreshToken)
+        .cookie("refreshToken", result.refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+        })
         .status(200)
         .json({
           data: {
@@ -55,7 +61,10 @@ export class AuthController {
         req.cookies.refreshToken
       );
       res
-        .cookie("refreshToken", result.refreshToken)
+        .cookie("refreshToken", result.refreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+        })
         .status(200)
         .json({
           data: {
