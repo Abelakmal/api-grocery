@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { IProduct } from "../../types/product.type";
 import fs from "fs";
 import { IFilter } from "../../types/user.type";
+import { IStoreBranch } from "../../types/storeBranch.type";
 
 export class ProductRepository {
   private prisma: PrismaClient;
@@ -10,12 +11,33 @@ export class ProductRepository {
     this.prisma = new PrismaClient();
   }
 
-  public async create(data: IProduct, pathImg: string): Promise<IProduct> {
+  public async create(data: IProduct, pathImg: string, stores:IStoreBranch[]): Promise<void> {
     try {
-      const result = await this.prisma.product.create({
-        data,
+      await this.prisma.$transaction(async (tx) => {
+        const product = await this.prisma.product.create({
+          data,
+        });
+        let stock;
+        let stockChange;
+        for (const store of stores) {
+          stock = await this.prisma.stock.create({
+            data: {
+              amount: 0,
+              productId: product.id,
+              branchId: store.id,
+            },
+          });
+  
+          stockChange = await this.prisma.stockChange.create({
+            data: {
+              stockAfter: 0,
+              stockBefore: 0,
+              stockId: stock.id,
+            },
+          });
+        }
+        return product;
       });
-      return result;
     } catch (error) {
       fs.unlinkSync(pathImg);
       throw error;

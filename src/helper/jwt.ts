@@ -7,6 +7,7 @@ const secretKeyRefreshToken: Secret = process.env.JWT_SECRET_REFRESH_TOKEN!;
 
 interface PayloadToken {
   id: number;
+  isSuper?: boolean;
 }
 
 export const createToken = (data: PayloadToken) => {
@@ -35,7 +36,13 @@ export const verifyToken = (
 
   try {
     const decoded = jwt.verify(token, secretKey) as PayloadToken;
-    req.user = { id: decoded.id };
+
+    if (decoded.isSuper !== undefined) {
+      req.admin = { id: decoded.id, isSuper: decoded.isSuper };
+    } else {
+      req.user = { id: decoded.id };
+    }
+
     next();
   } catch (error) {
     next(new ApiError("Invalid Token", 401));
@@ -46,7 +53,9 @@ interface IJwt {
   data: PayloadToken;
 }
 
-export const verifyRefreshToken = (refreshToken: string): Promise<number> => {
+export const verifyRefreshToken = (
+  refreshToken: string
+): Promise<PayloadToken> => {
   return new Promise((resolve, reject) => {
     jwt.verify(refreshToken, secretKeyRefreshToken, (err, payload) => {
       if (err) {
@@ -57,7 +66,7 @@ export const verifyRefreshToken = (refreshToken: string): Promise<number> => {
         }
       } else {
         const { data } = payload as IJwt;
-        resolve(data.id);
+        resolve(data);
       }
     });
   });
