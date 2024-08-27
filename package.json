@@ -3,7 +3,8 @@
   "version": "1.0.0bun ",
   "main": "src/index.ts",
   "scripts": {
-    "start": "bun --watch src/index.ts"
+    "start": "bun --watch src/index.ts",
+    "seed": "bun prisma/seed.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

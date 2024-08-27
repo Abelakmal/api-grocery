@@ -14,4 +14,4 @@ RUN bun prisma generate
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "bun prisma db push && bun start"]
+CMD ["sh", "-c", "bun prisma db push && bun seed && bun start"]

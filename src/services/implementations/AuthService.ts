@@ -23,7 +23,6 @@ export class AuthService implements IAuthService {
     password: string
   ): Promise<ILogin> {
     try {
-      console.log(email, password);
 
       const user = await this.userRepository.getUserByEmail(email);
 
@@ -62,9 +61,8 @@ export class AuthService implements IAuthService {
         admin?.password as string
       );
 
-      console.log(checkPassword);
 
-      if (!checkPassword && !admin.isSuper) {
+      if (!checkPassword) {
         throw new ApiError("Email or Password is wrong", 401);
       }
 
