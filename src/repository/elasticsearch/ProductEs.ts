@@ -29,7 +29,6 @@ export class ProductEs {
         },
       });
     } catch (error) {
-      console.log(error);
       
       await this.prisma.product.delete({ where: { id: product.id } });
       fs.unlinkSync(pathImg);
