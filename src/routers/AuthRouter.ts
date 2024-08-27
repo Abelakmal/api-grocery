@@ -22,6 +22,12 @@ export class AuthRouter {
       this.authController.loginUser.bind(this.authController)
     );
     this.router.post(
+      "/login-admin",
+      authValidator(),
+      validate,
+      this.authController.loginAdmin.bind(this.authController)
+    );
+    this.router.post(
       "/refreshToken",
       this.authController.refreshToken.bind(this.authController)
     );

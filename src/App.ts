@@ -16,6 +16,9 @@ import { AddressRouter } from "./routers/AddressRouter";
 import { ProductRouter } from "./routers/ProductRouter";
 import { CategoryRouter } from "./routers/CategoryRouter";
 import { CartRouter } from "./routers/CartRouter";
+import { StoreBranchRouter } from "./routers/StoreBranchRouter";
+import { AdminRouter } from "./routers/AdminRouter";
+import { StockRouter } from "./routers/StockRouter";
 const cookieParser = require("cookie-parser");
 
 export class App {
@@ -50,8 +53,11 @@ export class App {
     const authRouter = new AuthRouter();
     const addressRouter = new AddressRouter();
     const productRouter = new ProductRouter();
-    const categoryRouter = new CategoryRouter()
-    const cartRouter =  new CartRouter()
+    const categoryRouter = new CategoryRouter();
+    const cartRouter = new CartRouter();
+    const storeBranchRouter = new StoreBranchRouter();
+    const adminRouter = new AdminRouter();
+    const stockRouter = new StockRouter();
 
     this.app.use(
       "/api/media/users",
@@ -70,8 +76,11 @@ export class App {
     this.app.use("/api/auth", authRouter.getRouter());
     this.app.use("/api/address", addressRouter.getRouter());
     this.app.use("/api/product", productRouter.getRouter());
-    this.app.use("/api/category", categoryRouter.getRouter())
-    this.app.use("/api/cart", cartRouter.getRouter())
+    this.app.use("/api/category", categoryRouter.getRouter());
+    this.app.use("/api/cart", cartRouter.getRouter());
+    this.app.use("/api/store-branch", storeBranchRouter.getRouter());
+    this.app.use("/api/admin", adminRouter.getRouter());
+    this.app.use("/api/stock", stockRouter.getRouter());
   }
 
   private handleNotFound(): void {

@@ -2,6 +2,7 @@ import { ApiError } from "../../error/ApiError";
 import { baseURL } from "../../helper/config";
 import { ProductEs } from "../../repository/elasticsearch/ProductEs";
 import { ProductRepository } from "../../repository/prisma/ProductRepository";
+import { StoreBranchRepository } from "../../repository/prisma/StoreBranchRepository";
 import { IProduct } from "../../types/product.type";
 import { IFilter } from "../../types/user.type";
 import { IProductService } from "../interfaces/IProductService";
@@ -10,9 +11,11 @@ import path from "path";
 
 export class ProductService implements IProductService {
   private productRepository: ProductRepository;
+  private storeBranchRepository: StoreBranchRepository;
   private productEs: ProductEs;
   constructor() {
     this.productRepository = new ProductRepository();
+    this.storeBranchRepository = new StoreBranchRepository();
     this.productEs = new ProductEs();
   }
 
@@ -22,8 +25,12 @@ export class ProductService implements IProductService {
     pathImg: string
   ): Promise<void> {
     try {
+      const stores = await this.storeBranchRepository.get();
+      if (stores.length === 0) {
+        throw new ApiError("Store is not found", 404);
+      }
       product.image = `${process.env.API_URL}/media/products/${image}`;
-      await this.productRepository.create(product, pathImg);
+      await this.productRepository.create(product, pathImg, stores);
     } catch (error) {
       throw error;
     }
@@ -43,7 +50,6 @@ export class ProductService implements IProductService {
       if (query.category3) {
         filterCategory.category3 = parseInt(query.category3 as string, 0);
       }
-      
 
       let sort;
 
@@ -69,7 +75,7 @@ export class ProductService implements IProductService {
         filterCategory,
         sort
       );
-      
+
       return data;
     } catch (error) {
       throw error;

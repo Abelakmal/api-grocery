@@ -29,6 +29,26 @@ export class AuthController {
     }
   }
 
+  public async loginAdmin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body;
+      const result: ILogin = await this.authService.loginAdminService(
+        email,
+        password
+      );
+      res
+        .cookie("refreshToken", result.refreshToken)
+        .status(200)
+        .json({
+          data: {
+            token: result.token,
+          },
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.authService.refreshTokenService(
