@@ -110,7 +110,7 @@ model Stock {
   updatedAt   DateTime       @updatedAt
   productId   Int
   product     Product        @relation(fields: [productId], references: [id])
-  branchId    Int
+  branchId    Int 
   storeBranch StoreBranch   @relation(fields: [branchId], references: [id])
   stockChange StockChange[]
 }

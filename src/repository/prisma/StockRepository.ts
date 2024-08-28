@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { IFilter } from "../../types/user.type";
 
 export class StockRepository {
   private prisma: PrismaClient;
@@ -36,6 +37,14 @@ export class StockRepository {
       const data = await this.prisma.stock.findUnique({
         where: {
           id,
+        },
+        include: {
+          product: {
+            include: {
+              category: true,
+            },
+          },
+          storeBranch: true,
         },
       });
       return data;
@@ -119,6 +128,114 @@ export class StockRepository {
         },
       });
       return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async get(
+    skip: number,
+    take: number,
+    search: string,
+    filter: IFilter,
+    sort: string,
+    lat: string,
+    lng: string
+  ) {
+    try {
+      let categoryFilter = "";
+      if (filter.category1 || filter.category2 || filter.category3) {
+        categoryFilter = `
+          AND (
+            ${filter.category1 ? `p."categoryId" = ${filter.category1}` : ""}
+            ${
+              filter.category1 && (filter.category2 || filter.category3)
+                ? "OR"
+                : ""
+            }
+            ${filter.category2 ? `p."categoryId" = ${filter.category2}` : ""}
+            ${filter.category2 && filter.category3 ? "OR" : ""}
+            ${filter.category3 ? `p."categoryId" = ${filter.category3}` : ""}
+          )
+        `;
+      }
+
+
+      const result: any = await this.prisma.$queryRaw`
+       WITH ProductPagination AS (
+    SELECT 
+      s."id",
+      s."amount",
+      s."createdAt" AS "stock_createdAt",
+      s."updatedAt" AS "stock_updatedAt",
+      p."id" AS id_product,
+      p."name" AS product_name,
+      p."description",
+      p."weight",
+      p."unitWeight",
+      p."image" AS product_image,
+      p."price",
+      p."createdAt" AS "product_createdAt",
+      p."updatedAt" AS "product_updatedAt",
+      c."name" AS category_name,
+      c."image" AS category_image,
+      sb."name" AS store_name,
+      sb."location",
+      (
+        6371 * acos(
+          cos(radians(CAST(${lat} AS numeric))) * cos(radians(CAST(sb."latitude" AS numeric))) *
+          cos(radians(CAST(sb."longitude" AS numeric)) - radians(CAST(${lng} AS numeric))) +
+          sin(radians(CAST(${lat} AS numeric))) * sin(radians(CAST(sb."latitude" AS numeric)))
+        )
+      ) AS distance
+    FROM "Stock" AS s
+    INNER JOIN "Product" AS p ON s."productId" = p."id" 
+    INNER JOIN "Category" AS c ON p."categoryId" = c."id"
+    INNER JOIN "StoreBranch" AS sb ON s."branchId" = sb."id"
+    WHERE 
+      LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%' 
+      ${Prisma.raw(categoryFilter)}
+      AND (
+        6371 * acos(
+          cos(radians(CAST(${lat} AS numeric))) * cos(radians(CAST(sb."latitude" AS numeric))) *
+          cos(radians(CAST(sb."longitude" AS numeric)) - radians(CAST(${lng} AS numeric))) +
+          sin(radians(CAST(${lat} AS numeric))) * sin(radians(CAST(sb."latitude" AS numeric)))
+        )
+      ) <= ${50}
+  )
+  SELECT 
+    *
+  FROM ProductPagination
+  ${Prisma.raw(sort)}
+  LIMIT ${take} OFFSET ${skip}
+    `;
+
+      const groupedResults = result.map((item: any) => ({
+        id: item.id,
+        amount: item.amount,
+        createdAt: item.stock_createdAt,
+        updateAt: item.stock_updatedAt,
+        product: {
+          name: item.product_name,
+          description: item.description,
+          weight: item.weight,
+          unitWeight: item.unitWeight,
+          image: item.product_image,
+          price: item.price,
+          categoryId: item.categoryId,
+          category: {
+            id: item.categoryId,
+            name: item.categoryName,
+            image: item.categoryImage,
+          },
+        },
+        branchStore: {
+          name: item.store_name,
+          location: item.location,
+        },
+      }));
+
+      return groupedResults;
     } catch (error) {
       throw error;
     }

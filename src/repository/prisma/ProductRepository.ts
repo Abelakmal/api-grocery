@@ -23,6 +23,7 @@ export class ProductRepository {
         });
         let stock;
         let stockChange;
+        
         for (const store of stores) {
           stock = await this.prisma.stock.create({
             data: {
@@ -99,7 +100,6 @@ export class ProductRepository {
         unitWeight: item.unitWeight,
         image: item.image,
         price: item.price,
-        stock: item.stock,
         categoryId: item.categoryId,
         category: {
           id: item.categoryId,

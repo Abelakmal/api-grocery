@@ -1,7 +1,9 @@
+import { Stock } from "@prisma/client";
 import { ApiError } from "../../error/ApiError";
 import { StockRepository } from "../../repository/prisma/StockRepository";
 import { StoreBranchRepository } from "../../repository/prisma/StoreBranchRepository";
-import { IStock, IStockChange } from "../../types/stock.type";
+import { IResponse, IStock, IStockChange } from "../../types/stock.type";
+import { IFilter } from "../../types/user.type";
 import { IStockService } from "../interfaces/IStockService";
 
 export class StockService implements IStockService {
@@ -56,6 +58,53 @@ export class StockService implements IStockService {
         search
       );
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getStockById(id: number): Promise<IStock> {
+    try {
+      const isExist = await this.stockRepository.getById(id);
+
+      if (!isExist) {
+        throw new ApiError("Id is not Found", 404);
+      }
+
+      return isExist;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getStocks(
+    search: string,
+    filter: IFilter,
+    sort: string,
+    page: number,
+    pageSize: number,
+    lat: string = "-6.186486",
+    lng: string = "106.834091"
+  ): Promise<IResponse<IStock>> {
+    try {
+
+      const skip = (page - 1) * pageSize;
+      const data = await this.stockRepository.get(
+        skip,
+        pageSize,
+        search,
+        filter,
+        sort,
+        lat,
+        lng
+      );
+      
+      return {
+        total: data.length,
+        skip,
+        limit: pageSize,
+        data,
+      };
     } catch (error) {
       throw error;
     }

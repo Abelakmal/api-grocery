@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StockService } from "../services/implementations/StockService";
+import { IFilter } from "../types/user.type";
 
 export class StockController {
   private stockService: StockService;
@@ -55,6 +56,71 @@ export class StockController {
         endDate as string,
         parseInt(categoryId as string, 0),
         search as string
+      );
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async getStocks(req: Request, res: Response, next: NextFunction) {
+    try {
+      const search = (req.query.search as string) || "";
+      let filterCategory: IFilter = {};
+      if (req.query.category1) {
+        filterCategory.category1 = parseInt(req.query.category1 as string, 0);
+      }
+
+      if (req.query.category2) {
+        filterCategory.category2 = parseInt(req.query.category2 as string, 0);
+      }
+      if (req.query.category3) {
+        filterCategory.category3 = parseInt(req.query.category3 as string, 0);
+      }
+
+      let sort;
+
+      switch (req.query.sort) {
+        case "random":
+          sort = `ORDER BY RANDOM()`;
+          break;
+        case "latest":
+          sort = `ORDER BY p."id" DESC`;
+          break;
+        case "higher":
+          sort = `ORDER BY p."price" ASC`;
+          break;
+        case "lowest":
+          sort = `ORDER BY p."price" DESC`;
+          break;
+        default:
+          sort = `ORDER BY RANDOM()`;
+      }
+
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
+
+      const data = await this.stockService.getStocks(
+        search,
+        filterCategory,
+        sort,
+        page,
+        pageSize,
+        req.query.latitude as string,
+        req.query.longitude as string
+      );
+      res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async getStockById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await this.stockService.getStockById(
+        parseInt(req.params.id, 0)
       );
       res.status(200).json({
         data,
