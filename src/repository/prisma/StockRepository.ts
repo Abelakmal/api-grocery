@@ -224,9 +224,8 @@ export class StockRepository {
           price: item.price,
           categoryId: item.categoryId,
           category: {
-            id: item.categoryId,
-            name: item.categoryName,
-            image: item.categoryImage,
+            name: item.category_name,
+            image: item.category_image,
           },
         },
         branchStore: {
