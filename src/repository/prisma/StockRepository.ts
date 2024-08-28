@@ -160,8 +160,6 @@ export class StockRepository {
         `;
       }
 
-      console.log(lat, lng);
-
       const result: any = await this.prisma.$queryRaw`
        WITH ProductPagination AS (
       SELECT 
@@ -220,6 +218,8 @@ export class StockRepository {
           image: item.product_image,
           price: item.price,
           categoryId: item.categoryId,
+          createdAt: item.product_createdAt,
+          updateAt: item.product_updatedAt,
           category: {
             name: item.category_name,
             image: item.category_image,
