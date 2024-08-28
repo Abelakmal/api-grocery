@@ -11,7 +11,11 @@ export class ProductRepository {
     this.prisma = new PrismaClient();
   }
 
-  public async create(data: IProduct, pathImg: string, stores:IStoreBranch[]): Promise<void> {
+  public async create(
+    data: IProduct,
+    pathImg: string,
+    stores: IStoreBranch[]
+  ): Promise<void> {
     try {
       await this.prisma.$transaction(async (tx) => {
         const product = await this.prisma.product.create({
@@ -27,7 +31,7 @@ export class ProductRepository {
               branchId: store.id,
             },
           });
-  
+
           stockChange = await this.prisma.stockChange.create({
             data: {
               stockAfter: 0,
@@ -118,6 +122,11 @@ export class ProductRepository {
         },
         include: {
           category: true,
+          stock: {
+            include: {
+              storeBranch: true,
+            },
+          },
         },
       });
       return data;
