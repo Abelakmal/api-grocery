@@ -87,13 +87,13 @@ export class StockController {
           sort = `ORDER BY RANDOM()`;
           break;
         case "latest":
-          sort = `ORDER BY p."id" DESC`;
+          sort = `ORDER BY id DESC`;
           break;
         case "higher":
-          sort = `ORDER BY p."price" ASC`;
+          sort = `ORDER BY price ASC`;
           break;
         case "lowest":
-          sort = `ORDER BY p."price" DESC`;
+          sort = `ORDER BY price DESC`;
           break;
         default:
           sort = `ORDER BY RANDOM()`;

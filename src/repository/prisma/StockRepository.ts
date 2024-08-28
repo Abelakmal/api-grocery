@@ -160,54 +160,51 @@ export class StockRepository {
         `;
       }
 
+      console.log(lat, lng);
 
       const result: any = await this.prisma.$queryRaw`
        WITH ProductPagination AS (
+      SELECT 
+        s."id",
+        s."amount",
+        s."createdAt" AS "stock_createdAt",
+        s."updatedAt" AS "stock_updatedAt",
+        p."id" AS id_product,
+        p."name" AS product_name,
+        p."description",
+        p."weight",
+        p."unitWeight",
+        p."image" AS product_image,
+        p."price",
+        p."createdAt" AS "product_createdAt",
+        p."updatedAt" AS "product_updatedAt",
+        c."name" AS category_name,
+        c."image" AS category_image,
+        sb."name" AS store_name,
+        sb."location",
+        (6371 * acos(LEAST(1, GREATEST(-1,
+          cos(radians(CAST(${lat} AS numeric(9,6)))) * cos(radians(CAST(sb."latitude" AS numeric(9,6)))) *
+          cos(radians(CAST(sb."longitude" AS numeric(9,6))) - radians(CAST(${lng} AS numeric(9,6)))) +
+          sin(radians(CAST(${lat} AS numeric(9,6)))) * sin(radians(CAST(sb."latitude" AS numeric(9,6))))
+        )))) AS distance
+      FROM "Stock" AS s
+      INNER JOIN "Product" AS p ON s."productId" = p."id"
+      INNER JOIN "Category" AS c ON p."categoryId" = c."id"
+      INNER JOIN "StoreBranch" AS sb ON s."branchId" = sb."id"
+      WHERE 
+        LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%' 
+        ${Prisma.raw(categoryFilter)}
+        AND (6371 * acos(LEAST(1, GREATEST(-1,
+          cos(radians(CAST(${lat} AS numeric(9,6)))) * cos(radians(CAST(sb."latitude" AS numeric(9,6)))) *
+          cos(radians(CAST(sb."longitude" AS numeric(9,6))) - radians(CAST(${lng} AS numeric(9,6)))) +
+          sin(radians(CAST(${lat} AS numeric(9,6)))) * sin(radians(CAST(sb."latitude" AS numeric(9,6))))
+        )))) <= 50
+    )
     SELECT 
-      s."id",
-      s."amount",
-      s."createdAt" AS "stock_createdAt",
-      s."updatedAt" AS "stock_updatedAt",
-      p."id" AS id_product,
-      p."name" AS product_name,
-      p."description",
-      p."weight",
-      p."unitWeight",
-      p."image" AS product_image,
-      p."price",
-      p."createdAt" AS "product_createdAt",
-      p."updatedAt" AS "product_updatedAt",
-      c."name" AS category_name,
-      c."image" AS category_image,
-      sb."name" AS store_name,
-      sb."location",
-      (
-        6371 * acos(
-          cos(radians(CAST(${lat} AS numeric))) * cos(radians(CAST(sb."latitude" AS numeric))) *
-          cos(radians(CAST(sb."longitude" AS numeric)) - radians(CAST(${lng} AS numeric))) +
-          sin(radians(CAST(${lat} AS numeric))) * sin(radians(CAST(sb."latitude" AS numeric)))
-        )
-      ) AS distance
-    FROM "Stock" AS s
-    INNER JOIN "Product" AS p ON s."productId" = p."id" 
-    INNER JOIN "Category" AS c ON p."categoryId" = c."id"
-    INNER JOIN "StoreBranch" AS sb ON s."branchId" = sb."id"
-    WHERE 
-      LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%' 
-      ${Prisma.raw(categoryFilter)}
-      AND (
-        6371 * acos(
-          cos(radians(CAST(${lat} AS numeric))) * cos(radians(CAST(sb."latitude" AS numeric))) *
-          cos(radians(CAST(sb."longitude" AS numeric)) - radians(CAST(${lng} AS numeric))) +
-          sin(radians(CAST(${lat} AS numeric))) * sin(radians(CAST(sb."latitude" AS numeric)))
-        )
-      ) <= ${50}
-  )
-  SELECT 
-    *
-  FROM ProductPagination
-  ${Prisma.raw(sort)}
-  LIMIT ${take} OFFSET ${skip}
+      *
+    FROM ProductPagination
+    ${Prisma.raw(sort)}
+    LIMIT ${take} OFFSET ${skip}
     `;
 
       const groupedResults = result.map((item: any) => ({
