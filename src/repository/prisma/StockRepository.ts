@@ -79,7 +79,9 @@ export class StockRepository {
     startDate: string,
     endDate: string,
     categoryId: number = 0,
-    search: string
+    search: string,
+    skip: number,
+    take: number
   ) {
     try {
       let AND: [] | any = [{ stock: { branchId: id } }];
@@ -126,6 +128,8 @@ export class StockRepository {
             },
           },
         },
+        skip,
+        take,
       });
       return result;
     } catch (error) {

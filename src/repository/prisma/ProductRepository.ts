@@ -23,7 +23,7 @@ export class ProductRepository {
         });
         let stock;
         let stockChange;
-        
+
         for (const store of stores) {
           stock = await this.prisma.stock.create({
             data: {
@@ -52,7 +52,9 @@ export class ProductRepository {
   public async get(
     search: string,
     filter: IFilter,
-    sort: string
+    sort: string,
+    take: number,
+    skip: number
   ): Promise<IProduct[]> {
     try {
       let categoryFilter = "";
@@ -81,7 +83,9 @@ export class ProductRepository {
         p."unitWeight", 
         p."image", 
         p."price", 
-        p."categoryId", 
+        p."categoryId",
+        p."createdAt" AS "product_createdAt",
+        p."updatedAt" AS "product_updatedAt",
         c."id" AS "categoryId", 
         c."name" AS "categoryName", 
         c."image" AS "categoryImage"
@@ -90,6 +94,7 @@ export class ProductRepository {
       WHERE LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%'
       ${Prisma.raw(categoryFilter)}
       ${Prisma.raw(sort)}
+      LIMIT ${take} OFFSET ${skip}
     `;
 
       const groupedResults = result.map((item: any) => ({
@@ -101,6 +106,8 @@ export class ProductRepository {
         image: item.image,
         price: item.price,
         categoryId: item.categoryId,
+        createdAt: item.product_createdAt,
+        updateAt: item.product_updatedAt,
         category: {
           id: item.categoryId,
           name: item.categoryName,

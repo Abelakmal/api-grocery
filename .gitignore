@@ -177,12 +177,12 @@ dist
 
 #img 
 
-src/images/users/*
-!src/images/users/
-!src/images/users/images-1722195049750.jpg
-src/images/products/*
-!src/images/products/
-!src/images/products/wagyu-1723731312874.jpeg
-src/images/categories/*
-!src/images/categories/
-!src/images/categories/bakery-1723733346500.png
+# src/images/users/*
+# !src/images/users/
+# !src/images/users/images-1722195049750.jpg
+# src/images/products/*
+# !src/images/products/
+# !src/images/products/wagyu-1723731312874.jpeg
+# src/images/categories/*
+# !src/images/categories/
+# !src/images/categories/bakery-1723733346500.png

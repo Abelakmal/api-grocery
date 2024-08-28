@@ -30,7 +30,13 @@ export class AdminController {
   ): Promise<void> {
     try {
       const isSuper = req.admin?.isSuper;
-      const data = await this.adminService.getService(isSuper as boolean);
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
+      const data = await this.adminService.getService(
+        isSuper as boolean,
+        page,
+        pageSize
+      );
       res.status(200).json({
         data,
       });

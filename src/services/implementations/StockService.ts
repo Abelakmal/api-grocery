@@ -2,9 +2,10 @@ import { Stock } from "@prisma/client";
 import { ApiError } from "../../error/ApiError";
 import { StockRepository } from "../../repository/prisma/StockRepository";
 import { StoreBranchRepository } from "../../repository/prisma/StoreBranchRepository";
-import { IResponse, IStock, IStockChange } from "../../types/stock.type";
+import { IStock, IStockChange } from "../../types/stock.type";
 import { IFilter } from "../../types/user.type";
 import { IStockService } from "../interfaces/IStockService";
+import { IResponse } from "../../types/general.type";
 
 export class StockService implements IStockService {
   private stockRepository: StockRepository;
@@ -13,15 +14,25 @@ export class StockService implements IStockService {
     this.stockRepository = new StockRepository();
     this.storeBranchRepository = new StoreBranchRepository();
   }
-  public async getStockByIdStoreService(storeId: number): Promise<IStock[]> {
+  public async getStockByIdStoreService(
+    storeId: number,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IStock>> {
     try {
+      const skip = (page - 1) * pageSize;
       const isExist = await this.storeBranchRepository.getById(storeId);
 
       if (!isExist) {
         throw new ApiError("id is not found", 404);
       }
       const data = await this.stockRepository.getByStoreId(storeId);
-      return data;
+      return {
+        total: data.length,
+        skip,
+        limit: pageSize,
+        data,
+      };
     } catch (error) {
       throw error;
     }
@@ -47,17 +58,27 @@ export class StockService implements IStockService {
     startDate: string,
     endDate: string,
     categoryId: number = 0,
-    search: string
-  ): Promise<IStockChange[]> {
+    search: string,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IStockChange>> {
     try {
+      const skip = (page - 1) * pageSize;
       const data = await this.stockRepository.getHistoriesStock(
         storeId,
         startDate,
         endDate,
         categoryId,
-        search
+        search,
+        pageSize,
+        skip
       );
-      return data;
+      return {
+        total: data.length,
+        skip,
+        limit: pageSize,
+        data,
+      };
     } catch (error) {
       throw error;
     }
@@ -87,7 +108,6 @@ export class StockService implements IStockService {
     lng: string = "106.834091"
   ): Promise<IResponse<IStock>> {
     try {
-
       const skip = (page - 1) * pageSize;
       const data = await this.stockRepository.get(
         skip,
@@ -98,7 +118,7 @@ export class StockService implements IStockService {
         lat,
         lng
       );
-      
+
       return {
         total: data.length,
         skip,

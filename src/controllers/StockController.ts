@@ -30,8 +30,12 @@ export class StockController {
     next: NextFunction
   ) {
     try {
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
       const data = await this.stockService.getStockByIdStoreService(
-        parseInt(req.params.id, 0)
+        parseInt(req.params.id, 0),
+        page,
+        pageSize
       );
 
       res.status(200).json({
@@ -50,12 +54,16 @@ export class StockController {
     try {
       const { id } = req.params;
       const { startDate, endDate, categoryId, search } = req.query;
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
       const data = await this.stockService.getHistoryStockService(
         parseInt(id, 0),
         startDate as string,
         endDate as string,
         parseInt(categoryId as string, 0),
-        search as string
+        search as string,
+        page,
+        pageSize
       );
       res.status(200).json({
         data,

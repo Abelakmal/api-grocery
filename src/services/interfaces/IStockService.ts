@@ -1,4 +1,5 @@
-import { IResponse, IStock, IStockChange } from "../../types/stock.type";
+import { IResponse } from "../../types/general.type";
+import { IStock, IStockChange } from "../../types/stock.type";
 import { IFilter } from "../../types/user.type";
 
 export interface IStockService {
@@ -14,12 +15,18 @@ export interface IStockService {
     lng: string
   ): Promise<IResponse<IStock>>;
 
-  getStockByIdStoreService(storeId: number): Promise<IStock[]>;
+  getStockByIdStoreService(
+    storeId: number,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IStock>>;
   getHistoryStockService(
     storeId: number,
     startDate: string,
     endDate: string,
     categoryId: number,
-    search: string
-  ): Promise<IStockChange[]>;
+    search: string,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IStockChange>>;
 }

@@ -18,7 +18,7 @@ export class AdminRepository {
     }
   }
 
-  public async get(): Promise<IAdmin[]> {
+  public async get(skip: number, take: number): Promise<IAdmin[]> {
     try {
       const result = await this.prisma.admin.findMany({
         select: {
@@ -26,9 +26,11 @@ export class AdminRepository {
           name: true,
           isSuper: true,
           store_branch: true,
-          storeId:true,
+          storeId: true,
           password: false,
         },
+        skip,
+        take,
       });
       return result as any;
     } catch (error) {

@@ -3,6 +3,7 @@ import { baseURL } from "../../helper/config";
 import { ProductEs } from "../../repository/elasticsearch/ProductEs";
 import { ProductRepository } from "../../repository/prisma/ProductRepository";
 import { StoreBranchRepository } from "../../repository/prisma/StoreBranchRepository";
+import { IResponse } from "../../types/general.type";
 import { IProduct } from "../../types/product.type";
 import { IFilter } from "../../types/user.type";
 import { IProductService } from "../interfaces/IProductService";
@@ -36,7 +37,11 @@ export class ProductService implements IProductService {
     }
   }
 
-  public async getService(query: any): Promise<IProduct[]> {
+  public async getService(
+    query: any,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IProduct>> {
     try {
       const search = query.search || "";
       let filterCategory: IFilter = {};
@@ -70,13 +75,21 @@ export class ProductService implements IProductService {
           sort = `ORDER BY RANDOM()`;
       }
 
+      const skip = (page - 1) * pageSize;
       const data = await this.productRepository.get(
         search,
         filterCategory,
-        sort
+        sort,
+        pageSize,
+        skip
       );
 
-      return data;
+      return {
+        total: data.length,
+        skip,
+        limit: pageSize,
+        data,
+      };
     } catch (error) {
       throw error;
     }
