@@ -79,7 +79,7 @@ enum UnitWeight {
 model Cart {
   id Int @id @default(autoincrement())
   user_id Int
-  product_id Int @unique
+  product_id Int 
   quantity Int @default(1)
   price_at_time Int
   createdAt   DateTime       @default(now())

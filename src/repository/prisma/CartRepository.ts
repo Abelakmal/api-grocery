@@ -55,11 +55,14 @@ export class CartRepository {
     }
   }
 
-  public async getByProductId(id: number): Promise<ICart | null> {
+  public async getByProductId(
+    id: number,
+    user_id: number
+  ): Promise<ICart | null> {
     try {
-      const data = await this.prisma.cart.findUnique({
+      const data = await this.prisma.cart.findFirst({
         where: {
-          product_id: id,
+          AND: [{ product_id: id }, { user_id }],
         },
       });
       return data;
