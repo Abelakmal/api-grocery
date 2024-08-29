@@ -240,4 +240,27 @@ export class StockRepository {
       throw error;
     }
   }
+
+  public async count(lat: string, lng: string): Promise<number> {
+    try {
+      const count: number = await this.prisma.$queryRaw`
+      SELECT 
+    COUNT(*) ,
+    (6371 * acos(LEAST(1, GREATEST(-1,
+      cos(radians(CAST(${lat} AS numeric(9,6)))) * cos(radians(CAST(sb."latitude" AS numeric(9,6)))) *
+      cos(radians(CAST(sb."longitude" AS numeric(9,6))) - radians(CAST(${lng} AS numeric(9,6)))) +
+      sin(radians(CAST(${lat} AS numeric(9,6)))) * sin(radians(CAST(sb."latitude" AS numeric(9,6))))
+    )))) AS distance
+  FROM "Stock" AS s
+  INNER JOIN "Product" AS p ON s."productId" = p."id"
+  INNER JOIN "StoreBranch" AS sb ON s."branchId" = sb."id"
+  GROUP BY distance
+    `;
+    console.log(count);
+    
+      return count;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

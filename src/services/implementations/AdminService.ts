@@ -40,8 +40,10 @@ export class AdminService implements IAdminService {
       }
       const skip = (page - 1) * pageSize;
       const data = await this.adminRepository.get(skip, pageSize);
+      const total:any = await this.adminRepository.count()
+
       return {
-        total: data.length,
+        total,
         skip,
         limit: pageSize,
         data,

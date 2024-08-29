@@ -59,9 +59,6 @@ export class ProductService implements IProductService {
       let sort;
 
       switch (query.sort) {
-        case "random":
-          sort = `ORDER BY RANDOM()`;
-          break;
         case "latest":
           sort = `ORDER BY p."id" DESC`;
           break;
@@ -72,7 +69,7 @@ export class ProductService implements IProductService {
           sort = `ORDER BY p."price" DESC`;
           break;
         default:
-          sort = `ORDER BY RANDOM()`;
+          sort = ``;
       }
 
       const skip = (page - 1) * pageSize;
@@ -84,8 +81,10 @@ export class ProductService implements IProductService {
         skip
       );
 
+      const total:any = await this.productRepository.count()
+
       return {
-        total: data.length,
+        total,
         skip,
         limit: pageSize,
         data,

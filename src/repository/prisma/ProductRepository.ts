@@ -44,7 +44,9 @@ export class ProductRepository {
         return product;
       });
     } catch (error) {
-      fs.unlinkSync(pathImg);
+      if(pathImg){
+        fs.unlinkSync(pathImg);
+      }
       throw error;
     }
   }
@@ -116,6 +118,15 @@ export class ProductRepository {
       }));
 
       return groupedResults;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async count(): Promise<number> {
+    try {
+      const count = await this.prisma.product.count({});
+      return count;
     } catch (error) {
       throw error;
     }

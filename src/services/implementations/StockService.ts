@@ -119,8 +119,10 @@ export class StockService implements IStockService {
         lng
       );
 
+      const total: any = await this.stockRepository.count(lat, lng);
+
       return {
-        total: data.length,
+        total: total[0].count,
         skip,
         limit: pageSize,
         data,

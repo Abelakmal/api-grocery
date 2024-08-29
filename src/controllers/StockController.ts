@@ -91,9 +91,6 @@ export class StockController {
       let sort;
 
       switch (req.query.sort) {
-        case "random":
-          sort = `ORDER BY RANDOM()`;
-          break;
         case "latest":
           sort = `ORDER BY "product_createdAt" DESC`;
           break;
@@ -104,7 +101,7 @@ export class StockController {
           sort = `ORDER BY price ASC`;
           break;
         default:
-          sort = `ORDER BY RANDOM()`;
+          sort = ``;
       }
 
       const page = parseInt(req.query.page as string, 0) || 1;

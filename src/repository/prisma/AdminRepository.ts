@@ -38,6 +38,15 @@ export class AdminRepository {
     }
   }
 
+  public async count(): Promise<number> {
+    try {
+      const count = await this.prisma.admin.count({});
+      return count;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async getById(id: number): Promise<IAdmin | null> {
     try {
       const data = await this.prisma.admin.findUnique({
