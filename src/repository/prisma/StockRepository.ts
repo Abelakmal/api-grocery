@@ -223,7 +223,7 @@ export class StockRepository {
           weight: item.weight,
           unitWeight: item.unitWeight,
           image: item.product_image,
-          price: item.price,
+          price: BigInt(item.price),
           categoryId: item.categoryId,
           createdAt: item.product_createdAt,
           updateAt: item.product_updatedAt,
@@ -246,7 +246,6 @@ export class StockRepository {
 
   public async countByIdStore(id: number): Promise<number> {
     try {
-      
       const data = await this.prisma.stockChange.count({
         where: {
           stock: {

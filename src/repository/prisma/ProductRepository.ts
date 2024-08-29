@@ -44,7 +44,7 @@ export class ProductRepository {
         return product;
       });
     } catch (error) {
-      if(pathImg){
+      if (pathImg) {
         fs.unlinkSync(pathImg);
       }
       throw error;
@@ -106,7 +106,7 @@ export class ProductRepository {
         weight: item.weight,
         unitWeight: item.unitWeight,
         image: item.image,
-        price: item.price,
+        price: BigInt(item.price),
         categoryId: item.categoryId,
         createdAt: item.product_createdAt,
         updateAt: item.product_updatedAt,

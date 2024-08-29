@@ -12,6 +12,11 @@ export class CartService implements ICartService {
 
   public async addCartService(cart: ICart): Promise<void> {
     try {
+      const data = await this.cartRepository.getByProductId(cart.id);
+
+      if (data) {
+        throw new ApiError("Product sudah ada", 400); 
+      }
       await this.cartRepository.create(cart);
     } catch (error) {
       throw error;
