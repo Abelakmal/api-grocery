@@ -20,7 +20,8 @@ export class CartController {
 
   public async getCart(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.cartService.getCartService();
+      const id = req.user?.id;
+      const data = await this.cartService.getCartService(id as number);
       res.status(200).json({
         data,
       });
@@ -31,9 +32,11 @@ export class CartController {
 
   public async updateCart(req: Request, res: Response, next: NextFunction) {
     try {
+      const id = req.user?.id;
       const data = await this.cartService.updateCartService(
         parseInt(req.params.id, 0),
-        req.body
+        req.body,
+        id as number
       );
       res.status(200).json({
         data,
@@ -45,7 +48,11 @@ export class CartController {
 
   public async deleteCart(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.cartService.deleteCartService(parseInt(req.params.id));
+      const id = req.user?.id;
+      await this.cartService.deleteCartService(
+        parseInt(req.params.id),
+        id as number
+      );
       res.status(200).json({
         data: "ok",
       });

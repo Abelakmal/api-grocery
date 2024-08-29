@@ -58,13 +58,35 @@ export class UserRepository {
     }
   }
 
+  public async updatePassword(email: string, password: string) {
+    try {
+      await this.prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          password,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async updateUserById(id: number, data: IUser): Promise<IUser> {
     try {
       const result = await this.prisma.user.update({
         where: {
           id,
         },
-        data,
+        data: {
+          address: data.address,
+          dob: data.dob,
+          image: data.image,
+          email: data.email,
+          name: data.name,
+          phone: data.phone,
+        },
       });
       return result as IUser;
     } catch (error) {

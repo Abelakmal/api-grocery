@@ -9,6 +9,7 @@ import {
 import { ILogin } from "../../types/login.type";
 import { UserRepository } from "../../repository/prisma/UserRepository";
 import { AdminRepository } from "../../repository/prisma/AdminRepository";
+import { resetPassword } from "../../helper/nodemailer";
 
 export class AuthService implements IAuthService {
   private userRepository: UserRepository;
@@ -23,7 +24,6 @@ export class AuthService implements IAuthService {
     password: string
   ): Promise<ILogin> {
     try {
-
       const user = await this.userRepository.getUserByEmail(email);
 
       if (!user) {
@@ -61,7 +61,6 @@ export class AuthService implements IAuthService {
         admin?.password as string
       );
 
-
       if (!checkPassword) {
         throw new ApiError("Email or Password is wrong", 401);
       }
@@ -91,6 +90,20 @@ export class AuthService implements IAuthService {
         token,
         refreshToken,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async forgotPassword(email: string): Promise<void> {
+    try {
+      const checkEmail = await this.userRepository.getUserByEmail(email);
+
+      if (!checkEmail) {
+        throw new ApiError("Email is not found", 404);
+      }
+      const token = createToken({ id: checkEmail.id, email });
+      resetPassword(email, token);
     } catch (error) {
       throw error;
     }

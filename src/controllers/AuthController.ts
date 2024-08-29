@@ -75,4 +75,16 @@ export class AuthController {
       next(error);
     }
   }
+
+  public async forgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.params;
+      await this.authService.forgotPassword(email);
+      res.status(200).json({
+        data: "ok",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

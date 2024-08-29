@@ -19,8 +19,8 @@ export class UserService implements IUserService {
         throw new ApiError("Email already exists", 400);
       }
 
-      if(user.dob){
-        user.dob = new Date(user.dob)
+      if (user.dob) {
+        user.dob = new Date(user.dob);
       }
 
       user.password = await hashPassword(user.password);
@@ -58,10 +58,6 @@ export class UserService implements IUserService {
         throw new ApiError("Email is already in use", 409);
       }
 
-      if (data.password) {
-        data.password = await hashPassword(data.password);
-      }
-
       const update: IUser = await this.userRepository.updateUserById(id, data);
 
       const result: IUserResponse = excludeFields(update, ["password"]);
@@ -82,6 +78,25 @@ export class UserService implements IUserService {
       const image = `${process.env.API_URL}/media/users/${img}`;
       user.image = image;
       await this.userRepository.updateUserById(id, user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updatePasswordService(
+    email: string,
+    password: string
+  ): Promise<void> {
+    try {
+      const checkEmail = await this.userRepository.getUserByEmail(email);
+
+      if (!checkEmail) {
+        throw new ApiError("Email is not found", 404);
+      }
+
+      password = await hashPassword(password);
+
+      await this.userRepository.updatePassword(email, password);
     } catch (error) {
       throw error;
     }

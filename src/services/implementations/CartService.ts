@@ -23,18 +23,18 @@ export class CartService implements ICartService {
     }
   }
 
-  public async getCartService(): Promise<ICart[]> {
+  public async getCartService(userId:number): Promise<ICart[]> {
     try {
-      const result = await this.cartRepository.get();
+      const result = await this.cartRepository.get(userId);
       return result;
     } catch (error) {
       throw error;
     }
   }
 
-  public async updateCartService(id: number, cart: ICart): Promise<ICart> {
+  public async updateCartService(id: number, cart: ICart,userId:number): Promise<ICart> {
     try {
-      const isExist = await this.cartRepository.getById(id);
+      const isExist = await this.cartRepository.getById(id, userId);
 
       if (!isExist) {
         throw new ApiError("Id is not found", 404);
@@ -46,9 +46,9 @@ export class CartService implements ICartService {
     }
   }
 
-  public async deleteCartService(id: number): Promise<void> {
+  public async deleteCartService(id: number,userId:number): Promise<void> {
     try {
-      const isExist = await this.cartRepository.getById(id);
+      const isExist = await this.cartRepository.getById(id,userId);
 
       if (!isExist) {
         throw new ApiError("Id is not found", 404);

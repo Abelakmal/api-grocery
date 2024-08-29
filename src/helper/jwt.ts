@@ -8,6 +8,7 @@ const secretKeyRefreshToken: Secret = process.env.JWT_SECRET_REFRESH_TOKEN!;
 interface PayloadToken {
   id: number;
   isSuper?: boolean;
+  email?: string;
 }
 
 export const createToken = (data: PayloadToken) => {
@@ -40,7 +41,7 @@ export const verifyToken = (
     if (decoded.isSuper !== undefined) {
       req.admin = { id: decoded.id, isSuper: decoded.isSuper };
     } else {
-      req.user = { id: decoded.id };
+      req.user = { id: decoded.id, email: decoded.email };
     }
 
     next();

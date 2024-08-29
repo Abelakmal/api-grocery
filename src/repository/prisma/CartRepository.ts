@@ -18,11 +18,21 @@ export class CartRepository {
     }
   }
 
-  public async get(): Promise<ICart[]> {
+  public async get(userId: number): Promise<ICart[]> {
     try {
       const result = await this.prisma.cart.findMany({
+        where: {
+          user_id: userId,
+        },
+        orderBy: {
+          id: "desc",
+        },
         include: {
-          product: true,
+          product: {
+            include: {
+              category: true,
+            },
+          },
         },
       });
       return result;
@@ -31,11 +41,12 @@ export class CartRepository {
     }
   }
 
-  public async getById(id: number): Promise<ICart | null> {
+  public async getById(id: number, userId: number): Promise<ICart | null> {
     try {
       const data = await this.prisma.cart.findUnique({
         where: {
           id,
+          user_id: userId,
         },
       });
       return data;
