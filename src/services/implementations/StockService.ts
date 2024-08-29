@@ -27,8 +27,9 @@ export class StockService implements IStockService {
         throw new ApiError("id is not found", 404);
       }
       const data = await this.stockRepository.getByStoreId(storeId);
+      const total = await this.stockRepository.countByIdStore(storeId);
       return {
-        total: data.length,
+        total,
         skip,
         limit: pageSize,
         data,
@@ -70,11 +71,12 @@ export class StockService implements IStockService {
         endDate,
         categoryId,
         search,
-        pageSize,
-        skip
+        skip,
+        pageSize
       );
+      const total = await this.stockRepository.countByIdStore(storeId);
       return {
-        total: data.length,
+        total: total,
         skip,
         limit: pageSize,
         data,
@@ -119,10 +121,13 @@ export class StockService implements IStockService {
         lng
       );
 
-      const total: any = await this.stockRepository.count(lat, lng);
+      const total: number = await this.stockRepository.countBylocation(
+        lat,
+        lng
+      );
 
       return {
-        total: total[0].count,
+        total,
         skip,
         limit: pageSize,
         data,

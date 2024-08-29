@@ -55,6 +55,7 @@ export class StockController {
       const { id } = req.params;
       const { startDate, endDate, categoryId, search } = req.query;
       const page = parseInt(req.query.page as string, 0) || 1;
+      
       const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
       const data = await this.stockService.getHistoryStockService(
         parseInt(id, 0),

@@ -114,7 +114,9 @@ export class StockRepository {
 
       const result = await this.prisma.stockChange.findMany({
         where: {
-          AND,
+          stock: {
+            branchId: 1,
+          },
         },
         include: {
           stock: {
@@ -131,6 +133,7 @@ export class StockRepository {
         skip,
         take,
       });
+
       return result;
     } catch (error) {
       throw error;
@@ -241,9 +244,25 @@ export class StockRepository {
     }
   }
 
-  public async count(lat: string, lng: string): Promise<number> {
+  public async countByIdStore(id: number): Promise<number> {
     try {
-      const count: number = await this.prisma.$queryRaw`
+      
+      const data = await this.prisma.stockChange.count({
+        where: {
+          stock: {
+            branchId: id,
+          },
+        },
+      });
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async countBylocation(lat: string, lng: string): Promise<number> {
+    try {
+      const count: any = await this.prisma.$queryRaw`
       SELECT 
     COUNT(*) ,
     (6371 * acos(LEAST(1, GREATEST(-1,
@@ -256,9 +275,8 @@ export class StockRepository {
   INNER JOIN "StoreBranch" AS sb ON s."branchId" = sb."id"
   GROUP BY distance
     `;
-    console.log(count);
-    
-      return count;
+
+      return count[0].count;
     } catch (error) {
       throw error;
     }
