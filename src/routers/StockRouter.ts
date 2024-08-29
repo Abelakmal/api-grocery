@@ -14,28 +14,31 @@ export class StockRouter {
 
   private initializeRouters(): void {
     this.router.get(
-      "/",
-      this.stockContoller.getStocks.bind(this.stockContoller)
+      "/history/:id/store",
+      verifyToken,
+      this.stockContoller.getHistoryStock.bind(this.stockContoller)
     );
-    this.router.get(
-      "/:id",
-      this.stockContoller.getStockById.bind(this.stockContoller)
-    );
+
     this.router.get(
       "/:id/store",
       verifyToken,
       this.stockContoller.getStockByStoreId.bind(this.stockContoller)
     );
 
+    this.router.get(
+      "/:id",
+      this.stockContoller.getStockById.bind(this.stockContoller)
+    );
+
+    this.router.get(
+      "/",
+      this.stockContoller.getStocks.bind(this.stockContoller)
+    );
+
     this.router.patch(
       "/:id",
       verifyToken,
       this.stockContoller.updateStock.bind(this.stockContoller)
-    );
-    this.router.get(
-      "/history/:id/store",
-      verifyToken,
-      this.stockContoller.getHistoryStock.bind(this.stockContoller)
     );
   }
 
