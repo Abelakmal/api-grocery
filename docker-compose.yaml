@@ -20,7 +20,7 @@ services:
 
   app:
     build: .
-    image: api-grocery:1.0.2
+    image: api-grocery:1.0.3
     ports:
       - "3000:3000"
     env_file:

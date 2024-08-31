@@ -63,15 +63,15 @@ export class App {
 
     this.app.use(
       "/api/media/users",
-      express.static(__dirname + "/images/users")
+      express.static(__dirname + "/src/images/users")
     );
     this.app.use(
       "/api/media/products",
-      express.static(__dirname + "/images/products")
+      express.static(__dirname + "/src/images/products")
     );
     this.app.use(
       "/api/media/categories",
-      express.static(__dirname + "/images/categories")
+      express.static(__dirname + "/src/images/categories")
     );
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
