@@ -30,7 +30,7 @@ export class ProductService implements IProductService {
       if (stores.length === 0) {
         throw new ApiError("Store is not found", 404);
       }
-      product.image = `${process.env.API_URL}/media/${image}`;
+      product.image = `${baseURL}/media/${image}`;
       await this.productRepository.create(product, pathImg, stores);
     } catch (error) {
       throw error;
@@ -113,7 +113,7 @@ export class ProductService implements IProductService {
   ): Promise<IProduct> {
     try {
       if (file) {
-        product.image = `${process.env.API_URL}/media/${file.filename}`;
+        product.image = `${baseURL}/media/${file.filename}`;
       }
 
       const isExist = await this.productRepository.getById(id);

@@ -54,7 +54,7 @@ export class CategoryService implements ICategoryService {
   ): Promise<ICategory> {
     try {
       if (file) {
-        category.image = `${process.env.API_URL}/media/${file.filename}`;
+        category.image = `${baseURL}/media/${file.filename}`;
       }
       const data = await this.categoryRepository.getById(id);
       if (!data) {
