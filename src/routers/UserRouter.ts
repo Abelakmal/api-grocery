@@ -39,7 +39,7 @@ export class UserRouter {
     this.router.patch(
       "/img",
       verifyToken,
-      upload("users"),
+      upload(),
       this.userController.updateImg.bind(this.userController)
     );
     this.router.patch(

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres
@@ -25,8 +23,6 @@ services:
       - "3000:3000"
     env_file:
       - .env
-    environment:
-      - IMAGE_UPLOAD_PATH=/usr/src/app/src/images
     volumes:
       - api_grocery_images:/usr/src/app/src/images
     depends_on:

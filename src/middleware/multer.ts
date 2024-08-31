@@ -4,12 +4,11 @@ import { ApiError } from "../error/ApiError";
 import { imgUploadPath } from "../helper/config";
 
 // Fungsi upload menggunakan folder yang diberikan
-export function upload(folder: string) {
+export function upload() {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       // Gunakan variabel lingkungan untuk path penyimpanan
-      const uploadPath = path.join(imgUploadPath || "src/images", folder);
-      cb(null, uploadPath);
+      cb(null, imgUploadPath);
     },
     filename: function (req, file, cb) {
       cb(

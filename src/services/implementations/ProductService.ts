@@ -1,5 +1,5 @@
 import { ApiError } from "../../error/ApiError";
-import { baseURL } from "../../helper/config";
+import { baseURL, imgUploadPath } from "../../helper/config";
 import { ProductEs } from "../../repository/elasticsearch/ProductEs";
 import { ProductRepository } from "../../repository/prisma/ProductRepository";
 import { StoreBranchRepository } from "../../repository/prisma/StoreBranchRepository";
@@ -30,7 +30,7 @@ export class ProductService implements IProductService {
       if (stores.length === 0) {
         throw new ApiError("Store is not found", 404);
       }
-      product.image = `${process.env.API_URL}/media/products/${image}`;
+      product.image = `${process.env.API_URL}/media/${image}`;
       await this.productRepository.create(product, pathImg, stores);
     } catch (error) {
       throw error;
@@ -113,7 +113,7 @@ export class ProductService implements IProductService {
   ): Promise<IProduct> {
     try {
       if (file) {
-        product.image = `${process.env.API_URL}/media/products/${file.filename}`;
+        product.image = `${process.env.API_URL}/media/${file.filename}`;
       }
 
       const isExist = await this.productRepository.getById(id);
@@ -123,7 +123,7 @@ export class ProductService implements IProductService {
       const data = await this.productRepository.update(id, product);
       if (file) {
         const filePath = path.resolve(
-          "src/images" + isExist.image.replaceAll(`${baseURL}/media`, "")
+          imgUploadPath + isExist.image.replaceAll(`${baseURL}/media`, "")
         );
 
         fs.unlinkSync(filePath);
@@ -144,7 +144,7 @@ export class ProductService implements IProductService {
       await this.productRepository.delete(id);
 
       const filePath = path.resolve(
-        "src/images" + isExist.image.replaceAll(`${baseURL}/media`, "")
+        imgUploadPath + isExist.image.replaceAll(`${baseURL}/media`, "")
       );
 
       fs.unlinkSync(filePath);

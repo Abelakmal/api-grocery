@@ -75,7 +75,7 @@ export class UserService implements IUserService {
         throw new ApiError("User Id is not found", 404);
       }
 
-      const image = `${process.env.API_URL}/media/users/${img}`;
+      const image = `${process.env.API_URL}/media/${img}`;
       user.image = image;
       await this.userRepository.updateUserById(id, user);
     } catch (error) {
