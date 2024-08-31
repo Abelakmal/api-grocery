@@ -6,7 +6,7 @@ import express, {
   Response,
   urlencoded,
 } from "express";
-import { clientUrl, PORT } from "./helper/config";
+import { clientUrl, imgUploadPath, PORT } from "./helper/config";
 import cors from "cors";
 import { TestRouter } from "./routers/TestRouter";
 import { UserRouter } from "./routers/UserRouter";
@@ -63,7 +63,7 @@ export class App {
 
     this.app.use(
       "/api/media",
-      express.static(__dirname + "/src/images")
+      express.static(imgUploadPath)
     );
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
