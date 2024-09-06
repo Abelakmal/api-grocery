@@ -70,11 +70,11 @@ export class AddressRepository {
     }
   }
 
-  public async getByMain(): Promise<IAddress | null> {
+  public async getByMain(userId: number): Promise<IAddress | null> {
     try {
       const data = await this.prisma.address.findFirst({
         where: {
-          main: true,
+          AND: [{ userId }, { main: true }],
         },
       });
       return data;

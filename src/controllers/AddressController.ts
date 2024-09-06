@@ -32,7 +32,7 @@ export class AddressController {
 
   public async getMain(req: Request, res: Response, next: NextFunction){
     try {
-      const data = await this.addressService.getMain();
+      const data = await this.addressService.getMain(req.user?.id as number);
       res.status(200).json({
         data,
       });

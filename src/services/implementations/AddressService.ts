@@ -28,9 +28,9 @@ export class AddressService implements IAddressService {
     }
   }
 
-  public async getMain(): Promise<IAddress> {
+  public async getMain(userId:number): Promise<IAddress> {
     try {
-      const data = await this.addressRepository.getByMain();
+      const data = await this.addressRepository.getByMain(userId);
       if (!data) {
         throw new ApiError("Data is not Found", 404);
       }
