@@ -32,7 +32,7 @@ model User {
 model Address {
   id               Int     @id @default(autoincrement())
   label            String
-  location String
+  location String @default("Unknown")
   details          String
   recipient_name   String
   recipient_number String
