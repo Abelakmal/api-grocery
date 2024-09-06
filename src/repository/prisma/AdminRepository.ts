@@ -22,6 +22,7 @@ export class AdminRepository {
     try {
       const result = await this.prisma.admin.findMany({
         select: {
+          id: true,
           email: true,
           name: true,
           isSuper: true,

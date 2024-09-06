@@ -59,10 +59,10 @@ export class AdminController {
 
   public async updateAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.user?.id;
+      const id = req.params.id;
       const isSuper = req.admin?.isSuper;
       const data = await this.adminService.updateService(
-        id as number,
+        parseInt(id, 0),
         req.body,
         isSuper as boolean
       );
@@ -76,10 +76,10 @@ export class AdminController {
 
   public async deleteAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.user?.id;
+      const id = req.params.id;
       const isSuper = req.admin?.isSuper;
       const data = await this.adminService.deleteService(
-        id as number,
+        parseInt(id, 0),
         isSuper as boolean
       );
       res.status(200).json({

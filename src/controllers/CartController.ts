@@ -60,4 +60,16 @@ export class CartController {
       next(error);
     }
   }
+
+  public async deleteManyCart(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.user?.id;
+      await this.cartService.deleteManyCartService(id as number);
+      res.status(200).json({
+        data: "ok",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -19,7 +19,9 @@ export class AuthController {
       res
         .cookie("refreshToken", result.refreshToken, {
           httpOnly: true,
+          secure: true,
           sameSite: "none",
+          maxAge: 24 * 60 * 60 * 1000,
         })
         .status(200)
         .json({
@@ -42,7 +44,9 @@ export class AuthController {
       res
         .cookie("refreshToken", result.refreshToken, {
           httpOnly: true,
+          secure: true,
           sameSite: "none",
+          maxAge: 24 * 60 * 60 * 1000,
         })
         .status(200)
         .json({
@@ -63,7 +67,9 @@ export class AuthController {
       res
         .cookie("refreshToken", result.refreshToken, {
           httpOnly: true,
+          secure: true,
           sameSite: "none",
+          maxAge: 24 * 60 * 60 * 1000,
         })
         .status(200)
         .json({
@@ -80,6 +86,25 @@ export class AuthController {
     try {
       const { email } = req.params;
       await this.authService.forgotPassword(email);
+      res.status(200).json({
+        data: "ok",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      console.log("ok");
+
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/",
+      });
+
       res.status(200).json({
         data: "ok",
       });

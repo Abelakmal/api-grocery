@@ -28,6 +28,18 @@ export class AddressService implements IAddressService {
     }
   }
 
+  public async getMain(): Promise<IAddress> {
+    try {
+      const data = await this.addressRepository.getByMain();
+      if (!data) {
+        throw new ApiError("Data is not Found", 404);
+      }
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async updateMainService(userId: number, id: number): Promise<void> {
     try {
       const exist = await this.addressRepository.getById(id);
@@ -52,6 +64,7 @@ export class AddressService implements IAddressService {
     if (!exist) {
       throw new ApiError("Id is not found", 404);
     }
+    
     if (exist.userId !== userId) {
       throw new ApiError("unauthorized", 401);
     }

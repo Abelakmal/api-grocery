@@ -60,7 +60,7 @@ export class ProductService implements IProductService {
 
       switch (query.sort) {
         case "latest":
-          sort = `ORDER BY p."id" DESC`;
+          sort = `ORDER BY p."createdAt" DESC`;
           break;
         case "higher":
           sort = `ORDER BY p."price" ASC`;
@@ -69,7 +69,7 @@ export class ProductService implements IProductService {
           sort = `ORDER BY p."price" DESC`;
           break;
         default:
-          sort = ``;
+          sort = `ORDER BY p."id" ASC`;
       }
 
       const skip = (page - 1) * pageSize;

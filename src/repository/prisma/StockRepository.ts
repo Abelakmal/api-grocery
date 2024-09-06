@@ -53,11 +53,49 @@ export class StockRepository {
     }
   }
 
-  public async getByStoreId(storeId: number) {
+  public async getByStoreId(
+    id: number,
+    startDate: string,
+    endDate: string,
+    categoryId: number = 0,
+    search: string,
+    skip: number,
+    take: number
+  ) {
     try {
+      let AND: [] | any = [{ branchId: id }];
+      let product = {};
+      let createdAt = {};
+
+      if (categoryId && categoryId > 0) {
+        product = {
+          categoryId,
+        };
+        AND.push({ product });
+      }
+      if (startDate && endDate) {
+        createdAt = {
+          gte: new Date(startDate),
+          lte: new Date(endDate),
+        };
+        AND.push({ createdAt });
+      }
+
+      if (search) {
+        product = {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        };
+        AND.push({product });
+      }
       const data = await this.prisma.stock.findMany({
         where: {
-          branchId: storeId,
+          AND,
+        },
+        orderBy: {
+          updatedAt: "desc",
         },
         include: {
           stockChange: true,
@@ -67,6 +105,8 @@ export class StockRepository {
             },
           },
         },
+        skip,
+        take,
       });
       return data;
     } catch (error) {
@@ -114,9 +154,10 @@ export class StockRepository {
 
       const result = await this.prisma.stockChange.findMany({
         where: {
-          stock: {
-            branchId: 1,
-          },
+          AND,
+        },
+        orderBy: {
+          updatedAt: "desc",
         },
         include: {
           stock: {
@@ -174,7 +215,7 @@ export class StockRepository {
         s."amount",
         s."createdAt" AS "stock_createdAt",
         s."updatedAt" AS "stock_updatedAt",
-        p."id" AS id_product,
+        p."id" AS product_id,
         p."name" AS product_name,
         p."description",
         p."weight",
@@ -218,6 +259,7 @@ export class StockRepository {
         createdAt: item.stock_createdAt,
         updateAt: item.stock_updatedAt,
         product: {
+          id: item.product_id,
           name: item.product_name,
           description: item.description,
           weight: item.weight,

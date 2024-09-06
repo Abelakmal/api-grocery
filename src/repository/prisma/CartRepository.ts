@@ -55,6 +55,19 @@ export class CartRepository {
     }
   }
 
+  public async getByUserId(userId: number): Promise<ICart[]> {
+    try {
+      const data = await this.prisma.cart.findMany({
+        where: {
+          user_id: userId,
+        },
+      });
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async getByProductId(
     id: number,
     user_id: number
@@ -90,6 +103,18 @@ export class CartRepository {
       await this.prisma.cart.delete({
         where: {
           id,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async deleteMany(id: number): Promise<void> {
+    try {
+      await this.prisma.cart.deleteMany({
+        where: {
+          user_id: id,
         },
       });
     } catch (error) {

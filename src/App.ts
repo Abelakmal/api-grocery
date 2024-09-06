@@ -19,7 +19,8 @@ import { CartRouter } from "./routers/CartRouter";
 import { StoreBranchRouter } from "./routers/StoreBranchRouter";
 import { AdminRouter } from "./routers/AdminRouter";
 import { StockRouter } from "./routers/StockRouter";
-const cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
+
 
 export class App {
   private app: Express;
@@ -40,7 +41,7 @@ export class App {
       cors({
         origin: clientUrl,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
+        allowedHeaders: ["Content-Type", "Authorization", ""],
         credentials: true,
       })
     );

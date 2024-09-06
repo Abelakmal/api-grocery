@@ -11,19 +11,23 @@ export class AddressRepository {
   public async create(data: IAddress, userId: number): Promise<IAddress> {
     try {
       const {
-        label,
         details,
+        label,
         latitude,
+        location,
         longitude,
+        main,
         recipient_name,
         recipient_number,
       } = data;
       const result = await this.prisma.address.create({
         data: {
-          label,
           details,
+          label,
           latitude,
+          location,
           longitude,
+          main,
           recipient_name,
           recipient_number,
           userId,
@@ -58,6 +62,19 @@ export class AddressRepository {
       const data = await this.prisma.address.findUnique({
         where: {
           id,
+        },
+      });
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getByMain(): Promise<IAddress | null> {
+    try {
+      const data = await this.prisma.address.findFirst({
+        where: {
+          main: true,
         },
       });
       return data;

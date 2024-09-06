@@ -68,11 +68,12 @@ export class AdminService implements IAdminService {
   }
 
   public async updateService(
-    id: number,
+    id: number,  
     admin: IAdmin,
     isSuper: boolean
   ): Promise<IAdmin> {
     try {
+      
       if (!isSuper) {
         throw new ApiError("Unauthorized", 401);
       }

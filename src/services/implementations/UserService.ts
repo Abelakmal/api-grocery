@@ -20,6 +20,12 @@ export class UserService implements IUserService {
         throw new ApiError("Email already exists", 400);
       }
 
+      const checkPhone = await this.userRepository.getUserByPhone(user.phone);
+
+      if (checkPhone) {
+        throw new ApiError("Phone already exists", 400);
+      }
+
       if (user.dob) {
         user.dob = new Date(user.dob);
       }
@@ -57,6 +63,12 @@ export class UserService implements IUserService {
 
       if (checkEmail && user.email !== data.email) {
         throw new ApiError("Email is already in use", 409);
+      }
+
+      const checkPhone = await this.userRepository.getUserByPhone(data.phone);
+
+      if (checkPhone && data.phone !== user.phone) {
+        throw new ApiError("Phone already exists", 400);
       }
 
       const update: IUser = await this.userRepository.updateUserById(id, data);

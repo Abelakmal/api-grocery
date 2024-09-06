@@ -23,6 +23,8 @@ export class AddressRouter {
       verifyToken,
       this.addressController.getAddress.bind(this.addressController)
     );
+
+    this.router.get("/main",verifyToken,this.addressController.getMain.bind(this.addressController))
     this.router.patch(
       "/:id/main",
       verifyToken,

@@ -16,17 +16,24 @@ export class StockService implements IStockService {
   }
   public async getStockByIdStoreService(
     storeId: number,
+    startDate: string,
+    endDate: string,
+    categoryId: number,
+    search: string,
     page: number,
     pageSize: number
   ): Promise<IResponse<IStock>> {
     try {
       const skip = (page - 1) * pageSize;
-      const isExist = await this.storeBranchRepository.getById(storeId);
-
-      if (!isExist) {
-        throw new ApiError("id is not found", 404);
-      }
-      const data = await this.stockRepository.getByStoreId(storeId);
+      const data = await this.stockRepository.getByStoreId(
+        storeId,
+        startDate,
+        endDate,
+        categoryId,
+        search,
+        skip,
+        pageSize
+      );
       const total = await this.stockRepository.countByIdStore(storeId);
       return {
         total,
@@ -44,7 +51,7 @@ export class StockService implements IStockService {
       if (!isExist) {
         throw new ApiError("id is not found", 404);
       }
-      const data = await this.stockRepository.update(
+      await this.stockRepository.update(
         id,
         stock.amount,
         isExist.amount

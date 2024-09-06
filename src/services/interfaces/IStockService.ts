@@ -17,6 +17,10 @@ export interface IStockService {
 
   getStockByIdStoreService(
     storeId: number,
+    startDate: string,
+    endDate: string,
+    categoryId: number,
+    search: string,
     page: number,
     pageSize: number
   ): Promise<IResponse<IStock>>;

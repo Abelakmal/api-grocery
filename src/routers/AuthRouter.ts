@@ -35,6 +35,10 @@ export class AuthRouter {
       "/refreshToken",
       this.authController.refreshToken.bind(this.authController)
     );
+    this.router.post(
+      "/logout",
+      this.authController.logout.bind(this.authController)
+    );
   }
 
   public getRouter(): Router {

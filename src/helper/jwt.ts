@@ -12,12 +12,12 @@ interface PayloadToken {
 }
 
 export const createToken = (data: PayloadToken) => {
-  const expiresIn = "1d";
+  const expiresIn = "15m";
   return jwt.sign(data, secretKey, { expiresIn });
 };
 
 export const createRefreshToken = (data: {}) => {
-  const expiresIn = "1d";
+  const expiresIn = "24h";
   return jwt.sign({ data }, secretKeyRefreshToken, { expiresIn });
 };
 

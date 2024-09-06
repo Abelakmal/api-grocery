@@ -33,6 +33,11 @@ export class CartRouter {
       verifyToken,
       this.cartController.deleteCart.bind(this.cartController)
     );
+    this.router.delete(
+      "/",
+      verifyToken,
+      this.cartController.deleteManyCart.bind(this.cartController)
+    );
   }
 
   public getRouter(): Router {

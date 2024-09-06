@@ -5,4 +5,5 @@ export interface ICartService {
   getCartService(userId: number): Promise<ICart[]>;
   updateCartService(id: number, cart: ICart, userId: number): Promise<ICart>;
   deleteCartService(id: number, userId: number): Promise<void>;
+  deleteManyCartService(userId:number): Promise<void>
 }

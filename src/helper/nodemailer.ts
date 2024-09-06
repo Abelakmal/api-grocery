@@ -19,7 +19,10 @@ export const resetPassword = (email: string, resetToken: string) => {
     from: process.env.MY_EMAIL!,
     to: email,
     subject: "Reset Password",
-    text: `Click the link to reset your password: ${clientUrl}/reset-password?resetToken=${resetToken}&email=${email}`,
+    text: `
+    Link only valid in 15 minute
+    Click the link to reset your password: 
+    ${clientUrl}/reset-password?resetToken=${resetToken}&email=${email}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
