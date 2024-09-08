@@ -19,9 +19,9 @@ export class CartRouter {
       this.cartController.addCart.bind(this.cartController)
     );
     this.router.get(
-      "/",
+      "/:id",
       verifyToken,
-      this.cartController.getCart.bind(this.cartController)
+      this.cartController.getCartByAddress.bind(this.cartController)
     );
     this.router.put(
       "/:id",
@@ -29,14 +29,14 @@ export class CartRouter {
       this.cartController.updateCart.bind(this.cartController)
     );
     this.router.delete(
+      "/many/:address_id",
+      verifyToken,
+      this.cartController.deleteManyCart.bind(this.cartController)
+    );
+    this.router.delete(
       "/:id",
       verifyToken,
       this.cartController.deleteCart.bind(this.cartController)
-    );
-    this.router.delete(
-      "/",
-      verifyToken,
-      this.cartController.deleteManyCart.bind(this.cartController)
     );
   }
 

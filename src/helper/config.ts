@@ -9,3 +9,6 @@ export const imgUploadPath = process.env.IMAGE_UPLOAD_PATH || "src/images";
 export const elasticsearchConfig = {
   node: process.env.ELASTICSEARCH_NODE || "http://localhost:9200",
 };
+
+export const midtransServerkey = process.env.MIDTRANS_SERVER_KEY!;
+export const midtranstApiUrl = process.env.MIDTRANS_API_URL;

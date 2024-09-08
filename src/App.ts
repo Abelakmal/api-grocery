@@ -20,7 +20,7 @@ import { StoreBranchRouter } from "./routers/StoreBranchRouter";
 import { AdminRouter } from "./routers/AdminRouter";
 import { StockRouter } from "./routers/StockRouter";
 import cookieParser from "cookie-parser";
-
+import { TransactionRouter } from "./routers/TransactionRouter";
 
 export class App {
   private app: Express;
@@ -61,11 +61,9 @@ export class App {
     const storeBranchRouter = new StoreBranchRouter();
     const adminRouter = new AdminRouter();
     const stockRouter = new StockRouter();
+    const transactionRouter = new TransactionRouter();
 
-    this.app.use(
-      "/api/media",
-      express.static(imgUploadPath)
-    );
+    this.app.use("/api/media", express.static(imgUploadPath));
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());
@@ -76,6 +74,7 @@ export class App {
     this.app.use("/api/store-branch", storeBranchRouter.getRouter());
     this.app.use("/api/admin", adminRouter.getRouter());
     this.app.use("/api/stock", stockRouter.getRouter());
+    this.app.use("/api/transactions", transactionRouter.getRouter());
   }
 
   private handleNotFound(): void {

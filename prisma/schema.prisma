@@ -40,9 +40,11 @@ model Address {
   longitude        String
   main             Boolean @default(false)
   userId           Int
+  is_delete Boolean @default(false)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   user             User    @relation(fields: [userId], references: [id])
+  carts Cart[]
 }
 
 model Product {
@@ -57,9 +59,8 @@ model Product {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   category    Category   @relation(fields: [categoryId], references: [id])
-  cart Cart[]
   stock Stock[]
-  transactionItem TransactionsItem[]
+  
 }
 
 model Category {
@@ -80,14 +81,16 @@ enum UnitWeight {
 model Cart {
   id Int @id @default(autoincrement())
   user_id Int
-  product_id Int 
+  stock_id Int 
   quantity Int @default(1)
   price_at_time Int
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+  address_id Int 
 
   user User @relation(fields: [user_id],references: [id])
-  product Product @relation(fields: [product_id] ,references: [id])
+  stock Stock @relation(fields: [stock_id] ,references: [id])
+  address Address @relation(fields: [address_id],references: [id])
 }
 
 
@@ -128,6 +131,8 @@ model Stock {
   updatedAt   DateTime       @updatedAt
   storeBranch StoreBranch   @relation(fields: [branchId], references: [id])
   stockChange StockChange[]
+  cart Cart[]
+  transactionItem TransactionsItem[]
 }
 
 model StockChange {
@@ -149,6 +154,9 @@ model Transaction {
   snap_token         String?             @db.VarChar(255)
   snap_redirect_url  String?             @db.VarChar(255)
   payment_method     String?             @db.VarChar(110)
+  payment_link String?
+  va_number String?
+  address_id Int 
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   user User @relation(fields: [userId] , references: [id])
@@ -160,15 +168,15 @@ model Transaction {
 model TransactionsItem {
   id             String      @id @db.VarChar(110)
   transaction_id String      @db.VarChar(110)
-  product_id     Int
+  stock_id     Int
   price          Int
   quantity       Int
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   transactions   Transaction @relation(fields: [transaction_id], references: [id], onUpdate: Restrict, map: "transactions_items_ibfk_1")
-  products       Product     @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "transactions_items_ibfk_2")
+  stock Stock @relation(fields: [stock_id],references: [id])
 
-  @@index([product_id], map: "product_id")
+  @@index([stock_id], map: "stock_id")
   @@index([transaction_id], map: "transaction_id")
   @@map("transactions_items")
 }
