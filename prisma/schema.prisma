@@ -81,12 +81,12 @@ enum UnitWeight {
 model Cart {
   id Int @id @default(autoincrement())
   user_id Int
-  stock_id Int 
+  stock_id Int @default(0)
   quantity Int @default(1)
   price_at_time Int
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
-  address_id Int 
+  address_id Int @default(0)
 
   user User @relation(fields: [user_id],references: [id])
   stock Stock @relation(fields: [stock_id] ,references: [id])
