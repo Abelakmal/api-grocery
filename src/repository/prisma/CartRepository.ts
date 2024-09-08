@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { ICart } from "../../types/cart.type";
+import { ICart, ICartWithStock } from "../../types/cart.type";
 
 export class CartRepository {
   private prisma: PrismaClient;
@@ -18,21 +18,34 @@ export class CartRepository {
     }
   }
 
-  public async get(userId: number): Promise<ICart[]> {
+  public async get(user_id: number, address_id: number): Promise<ICart[]> {
     try {
       const result = await this.prisma.cart.findMany({
         where: {
-          user_id: userId,
+          AND: [
+            {
+              user_id,
+            },
+            {
+              address_id,
+            },
+          ],
         },
         orderBy: {
           id: "desc",
         },
         include: {
-          product: {
+          stock: {
             include: {
-              category: true,
+              product: {
+                include: {
+                  category: true,
+                },
+              },
             },
           },
+          user: true,
+          address: true,
         },
       });
       return result;
@@ -55,11 +68,26 @@ export class CartRepository {
     }
   }
 
-  public async getByUserId(userId: number): Promise<ICart[]> {
+  public async getByUserIdAndAddressId(
+    userId: number,
+    address_id: number
+  ): Promise<ICartWithStock[]> {
     try {
       const data = await this.prisma.cart.findMany({
         where: {
-          user_id: userId,
+          AND: [
+            { user_id: userId },
+            {
+              address_id,
+            },
+          ],
+        },
+        include: {
+          stock: {
+            include: {
+              product: true,
+            },
+          },
         },
       });
       return data;
@@ -75,7 +103,7 @@ export class CartRepository {
     try {
       const data = await this.prisma.cart.findFirst({
         where: {
-          AND: [{ product_id: id }, { user_id }],
+          AND: [{ stock_id: id }, { user_id }],
         },
       });
       return data;
@@ -110,11 +138,12 @@ export class CartRepository {
     }
   }
 
-  public async deleteMany(id: number): Promise<void> {
+  public async deleteMany(user_id: number, address_id: number): Promise<void> {
     try {
       await this.prisma.cart.deleteMany({
         where: {
-          user_id: id,
+          user_id,
+          address_id,
         },
       });
     } catch (error) {

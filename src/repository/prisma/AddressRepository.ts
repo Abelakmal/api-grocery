@@ -43,6 +43,7 @@ export class AddressRepository {
     try {
       const data = await this.prisma.address.findMany({
         where: {
+          is_delete: false,
           userId,
         },
         orderBy: [
@@ -61,6 +62,7 @@ export class AddressRepository {
     try {
       const data = await this.prisma.address.findUnique({
         where: {
+          is_delete: false,
           id,
         },
       });
@@ -74,6 +76,7 @@ export class AddressRepository {
     try {
       const data = await this.prisma.address.findFirst({
         where: {
+          is_delete: false,
           AND: [{ userId }, { main: true }],
         },
       });
@@ -87,6 +90,7 @@ export class AddressRepository {
       await this.prisma.$transaction([
         this.prisma.address.updateMany({
           where: {
+            is_delete: false,
             userId,
             main: true,
           },
@@ -97,6 +101,7 @@ export class AddressRepository {
 
         this.prisma.address.update({
           where: {
+            is_delete: false,
             id,
           },
           data: {
@@ -121,6 +126,7 @@ export class AddressRepository {
       } = data;
       const result = await this.prisma.address.update({
         where: {
+          is_delete: false,
           id,
         },
         data: {
@@ -140,9 +146,12 @@ export class AddressRepository {
 
   public async delete(id: number): Promise<void> {
     try {
-      await this.prisma.address.delete({
+      await this.prisma.address.update({
         where: {
           id,
+        },
+        data: {
+          is_delete: true,
         },
       });
     } catch (error) {
