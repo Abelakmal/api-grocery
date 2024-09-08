@@ -11,19 +11,23 @@ export class AddressRepository {
   public async create(data: IAddress, userId: number): Promise<IAddress> {
     try {
       const {
-        label,
         details,
+        label,
         latitude,
+        location,
         longitude,
+        main,
         recipient_name,
         recipient_number,
       } = data;
       const result = await this.prisma.address.create({
         data: {
-          label,
           details,
+          label,
           latitude,
+          location,
           longitude,
+          main,
           recipient_name,
           recipient_number,
           userId,
@@ -39,6 +43,7 @@ export class AddressRepository {
     try {
       const data = await this.prisma.address.findMany({
         where: {
+          is_delete: false,
           userId,
         },
         orderBy: [
@@ -57,7 +62,22 @@ export class AddressRepository {
     try {
       const data = await this.prisma.address.findUnique({
         where: {
+          is_delete: false,
           id,
+        },
+      });
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getByMain(userId: number): Promise<IAddress | null> {
+    try {
+      const data = await this.prisma.address.findFirst({
+        where: {
+          is_delete: false,
+          AND: [{ userId }, { main: true }],
         },
       });
       return data;
@@ -70,6 +90,7 @@ export class AddressRepository {
       await this.prisma.$transaction([
         this.prisma.address.updateMany({
           where: {
+            is_delete: false,
             userId,
             main: true,
           },
@@ -80,6 +101,7 @@ export class AddressRepository {
 
         this.prisma.address.update({
           where: {
+            is_delete: false,
             id,
           },
           data: {
@@ -104,6 +126,7 @@ export class AddressRepository {
       } = data;
       const result = await this.prisma.address.update({
         where: {
+          is_delete: false,
           id,
         },
         data: {
@@ -123,9 +146,12 @@ export class AddressRepository {
 
   public async delete(id: number): Promise<void> {
     try {
-      await this.prisma.address.delete({
+      await this.prisma.address.update({
         where: {
           id,
+        },
+        data: {
+          is_delete: true,
         },
       });
     } catch (error) {

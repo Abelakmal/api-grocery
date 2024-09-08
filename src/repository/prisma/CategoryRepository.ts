@@ -15,7 +15,9 @@ export class CategoryRepository {
         data,
       });
     } catch (error) {
-      fs.unlinkSync(pathImg);
+      if(pathImg){
+        fs.unlinkSync(pathImg);
+      }
       throw error;
     }
   }

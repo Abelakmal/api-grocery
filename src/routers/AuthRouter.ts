@@ -16,6 +16,10 @@ export class AuthRouter {
 
   private initializeRouters(): void {
     this.router.post(
+      "/forgotPassword/:email",
+      this.authController.forgotPassword.bind(this.authController)
+    );
+    this.router.post(
       "/login-users",
       authValidator(),
       validate,
@@ -30,6 +34,10 @@ export class AuthRouter {
     this.router.post(
       "/refreshToken",
       this.authController.refreshToken.bind(this.authController)
+    );
+    this.router.post(
+      "/logout",
+      this.authController.logout.bind(this.authController)
     );
   }
 

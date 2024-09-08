@@ -3,7 +3,7 @@ import { ApiError } from "../../error/ApiError";
 import { CategoryRepository } from "../../repository/prisma/CategoryRepository";
 import { ICategory } from "../../types/category.type";
 import { ICategoryService } from "../interfaces/ICategoryService";
-import { baseURL } from "../../helper/config";
+import { baseURL, imgUploadPath } from "../../helper/config";
 import fs from "fs";
 
 export class CategoryService implements ICategoryService {
@@ -19,7 +19,7 @@ export class CategoryService implements ICategoryService {
     pathImg: string
   ): Promise<void> {
     try {
-      category.image = `${baseURL}/media/categories/${image}`;
+      category.image = `${baseURL}/media/${image}`;
       await this.categoryRepository.create(category, pathImg);
     } catch (error) {
       throw error;
@@ -54,7 +54,7 @@ export class CategoryService implements ICategoryService {
   ): Promise<ICategory> {
     try {
       if (file) {
-        category.image = `${process.env.API_URL}/media/categories/${file.filename}`;
+        category.image = `${baseURL}/media/${file.filename}`;
       }
       const data = await this.categoryRepository.getById(id);
       if (!data) {
@@ -63,7 +63,7 @@ export class CategoryService implements ICategoryService {
       const result = await this.categoryRepository.update(id, category);
       if (file) {
         const filePath = path.resolve(
-          "src/images" + data.image.replaceAll(`${baseURL}/media`, "")
+          imgUploadPath + data.image.replaceAll(`${baseURL}/media`, "")
         );
 
         fs.unlinkSync(filePath);
@@ -76,12 +76,16 @@ export class CategoryService implements ICategoryService {
 
   public async deleteService(id: number): Promise<void> {
     try {
-
-      
       const data = await this.categoryRepository.getById(id);
       if (!data) {
         throw new ApiError("Id is not found", 404);
       }
+
+      const filePath = path.resolve(
+        imgUploadPath + data.image.replaceAll(`${baseURL}/media`, "")
+      );
+
+      fs.unlinkSync(filePath);
 
       await this.categoryRepository.delete(id);
     } catch (error) {

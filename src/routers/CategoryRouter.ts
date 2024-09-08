@@ -16,7 +16,7 @@ export class CategoryRouter {
   private initializeRouters(): void {
     this.router.post(
       "/",
-      upload("categories"),
+      upload(),
       this.categoryController.createCategory.bind(this.categoryController)
     );
     this.router.get(
@@ -29,7 +29,7 @@ export class CategoryRouter {
     );
     this.router.put(
       "/:id",
-      upload("categories"),
+      upload(),
       this.categoryController.updateCategory.bind(this.categoryController)
     );
     this.router.delete(

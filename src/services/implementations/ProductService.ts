@@ -1,8 +1,9 @@
 import { ApiError } from "../../error/ApiError";
-import { baseURL } from "../../helper/config";
+import { baseURL, imgUploadPath } from "../../helper/config";
 import { ProductEs } from "../../repository/elasticsearch/ProductEs";
 import { ProductRepository } from "../../repository/prisma/ProductRepository";
 import { StoreBranchRepository } from "../../repository/prisma/StoreBranchRepository";
+import { IResponse } from "../../types/general.type";
 import { IProduct } from "../../types/product.type";
 import { IFilter } from "../../types/user.type";
 import { IProductService } from "../interfaces/IProductService";
@@ -29,14 +30,18 @@ export class ProductService implements IProductService {
       if (stores.length === 0) {
         throw new ApiError("Store is not found", 404);
       }
-      product.image = `${process.env.API_URL}/media/products/${image}`;
+      product.image = `${baseURL}/media/${image}`;
       await this.productRepository.create(product, pathImg, stores);
     } catch (error) {
       throw error;
     }
   }
 
-  public async getService(query: any): Promise<IProduct[]> {
+  public async getService(
+    query: any,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IProduct>> {
     try {
       const search = query.search || "";
       let filterCategory: IFilter = {};
@@ -54,11 +59,8 @@ export class ProductService implements IProductService {
       let sort;
 
       switch (query.sort) {
-        case "random":
-          sort = `ORDER BY RANDOM()`;
-          break;
         case "latest":
-          sort = `ORDER BY p."id" DESC`;
+          sort = `ORDER BY p."createdAt" DESC`;
           break;
         case "higher":
           sort = `ORDER BY p."price" ASC`;
@@ -67,16 +69,26 @@ export class ProductService implements IProductService {
           sort = `ORDER BY p."price" DESC`;
           break;
         default:
-          sort = `ORDER BY RANDOM()`;
+          sort = `ORDER BY p."id" ASC`;
       }
 
+      const skip = (page - 1) * pageSize;
       const data = await this.productRepository.get(
         search,
         filterCategory,
-        sort
+        sort,
+        pageSize,
+        skip
       );
 
-      return data;
+      const total:any = await this.productRepository.count()
+
+      return {
+        total,
+        skip,
+        limit: pageSize,
+        data,
+      };
     } catch (error) {
       throw error;
     }
@@ -101,7 +113,7 @@ export class ProductService implements IProductService {
   ): Promise<IProduct> {
     try {
       if (file) {
-        product.image = `${process.env.API_URL}/media/products/${file.filename}`;
+        product.image = `${baseURL}/media/${file.filename}`;
       }
 
       const isExist = await this.productRepository.getById(id);
@@ -111,7 +123,7 @@ export class ProductService implements IProductService {
       const data = await this.productRepository.update(id, product);
       if (file) {
         const filePath = path.resolve(
-          "src/images" + isExist.image.replaceAll(`${baseURL}/media`, "")
+          imgUploadPath + isExist.image.replaceAll(`${baseURL}/media`, "")
         );
 
         fs.unlinkSync(filePath);
@@ -132,7 +144,7 @@ export class ProductService implements IProductService {
       await this.productRepository.delete(id);
 
       const filePath = path.resolve(
-        "src/images" + isExist.image.replaceAll(`${baseURL}/media`, "")
+        imgUploadPath + isExist.image.replaceAll(`${baseURL}/media`, "")
       );
 
       fs.unlinkSync(filePath);

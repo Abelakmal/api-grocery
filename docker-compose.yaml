@@ -1,6 +1,4 @@
-version: '3.8'
-
-services:   
+services:
   db:
     image: postgres
     restart: always
@@ -20,14 +18,16 @@ services:
 
   app:
     build: .
-    image: api-grocery:1.0.0
+    image: api-grocery:1.0.3
     ports:
       - "3000:3000"
-    env_file: 
+    env_file:
       - .env
+    volumes:
+      - api_grocery_images:/usr/src/app/src/images
     depends_on:
       - db
 
-
 volumes:
   postgres_data:
+  api_grocery_images:

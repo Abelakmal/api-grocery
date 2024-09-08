@@ -26,7 +26,13 @@ export class ProductController {
   }
   public async getProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this.productService.getService(req.query);
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
+      const data = await this.productService.getService(
+        req.query,
+        page,
+        pageSize
+      );
       res.status(200).json({
         data,
       });

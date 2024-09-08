@@ -11,7 +11,11 @@ export class ProductRepository {
     this.prisma = new PrismaClient();
   }
 
-  public async create(data: IProduct, pathImg: string, stores:IStoreBranch[]): Promise<void> {
+  public async create(
+    data: IProduct,
+    pathImg: string,
+    stores: IStoreBranch[]
+  ): Promise<void> {
     try {
       await this.prisma.$transaction(async (tx) => {
         const product = await this.prisma.product.create({
@@ -19,6 +23,7 @@ export class ProductRepository {
         });
         let stock;
         let stockChange;
+
         for (const store of stores) {
           stock = await this.prisma.stock.create({
             data: {
@@ -27,7 +32,7 @@ export class ProductRepository {
               branchId: store.id,
             },
           });
-  
+
           stockChange = await this.prisma.stockChange.create({
             data: {
               stockAfter: 0,
@@ -39,7 +44,9 @@ export class ProductRepository {
         return product;
       });
     } catch (error) {
-      fs.unlinkSync(pathImg);
+      if (pathImg) {
+        fs.unlinkSync(pathImg);
+      }
       throw error;
     }
   }
@@ -47,7 +54,9 @@ export class ProductRepository {
   public async get(
     search: string,
     filter: IFilter,
-    sort: string
+    sort: string,
+    take: number,
+    skip: number
   ): Promise<IProduct[]> {
     try {
       let categoryFilter = "";
@@ -76,7 +85,9 @@ export class ProductRepository {
         p."unitWeight", 
         p."image", 
         p."price", 
-        p."categoryId", 
+        p."categoryId",
+        p."createdAt" AS "product_createdAt",
+        p."updatedAt" AS "product_updatedAt",
         c."id" AS "categoryId", 
         c."name" AS "categoryName", 
         c."image" AS "categoryImage"
@@ -85,6 +96,7 @@ export class ProductRepository {
       WHERE LOWER(p."name") LIKE '%' || ${search.toLowerCase()} || '%'
       ${Prisma.raw(categoryFilter)}
       ${Prisma.raw(sort)}
+      LIMIT ${take} OFFSET ${skip}
     `;
 
       const groupedResults = result.map((item: any) => ({
@@ -94,9 +106,10 @@ export class ProductRepository {
         weight: item.weight,
         unitWeight: item.unitWeight,
         image: item.image,
-        price: item.price,
-        stock: item.stock,
+        price: BigInt(item.price),
         categoryId: item.categoryId,
+        createdAt: item.product_createdAt,
+        updateAt: item.product_updatedAt,
         category: {
           id: item.categoryId,
           name: item.categoryName,
@@ -110,6 +123,15 @@ export class ProductRepository {
     }
   }
 
+  public async count(): Promise<number> {
+    try {
+      const count = await this.prisma.product.count({});
+      return count;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async getById(id: number): Promise<IProduct | null> {
     try {
       const data = await this.prisma.product.findUnique({
@@ -118,6 +140,11 @@ export class ProductRepository {
         },
         include: {
           category: true,
+          stock: {
+            include: {
+              storeBranch: true,
+            },
+          },
         },
       });
       return data;

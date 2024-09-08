@@ -1,6 +1,7 @@
 export interface IAddress {
   id: number;
   label: string;
+  location: string;
   details: string;
   recipient_name: string;
   recipient_number: string;

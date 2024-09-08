@@ -16,7 +16,7 @@ export class ProductRouter {
   private initializeRouters(): void {
     this.router.post(
       "/",
-      upload("products"),
+      upload(),
       convertToInt(["weight", "price", "stock", "categoryId"]),
       this.productController.createProduct.bind(this.productController)
     );
@@ -30,7 +30,7 @@ export class ProductRouter {
     );
     this.router.put(
       "/:id",
-      upload("products"),
+      upload(),
       convertToInt(["weight", "price", "stock", "categoryId"]),
       this.productController.updateProduct.bind(this.productController)
     );

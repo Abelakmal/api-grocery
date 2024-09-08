@@ -30,6 +30,17 @@ export class AddressController {
     }
   }
 
+  public async getMain(req: Request, res: Response, next: NextFunction){
+    try {
+      const data = await this.addressService.getMain(req.user?.id as number);
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
+
   public async updateMain(req: Request, res: Response, next: NextFunction) {
     try {
       await this.addressService.updateMainService(

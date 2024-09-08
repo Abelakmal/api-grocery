@@ -8,4 +8,6 @@ export interface IProduct {
   image: string;
   price: bigint;
   categoryId: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

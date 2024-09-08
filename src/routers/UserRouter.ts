@@ -39,8 +39,13 @@ export class UserRouter {
     this.router.patch(
       "/img",
       verifyToken,
-      upload("users"),
+      upload(),
       this.userController.updateImg.bind(this.userController)
+    );
+    this.router.patch(
+      "/resetPassword",
+      verifyToken,
+      this.userController.updatePassword.bind(this.userController)
     );
   }
 

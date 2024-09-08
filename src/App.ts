@@ -6,7 +6,7 @@ import express, {
   Response,
   urlencoded,
 } from "express";
-import { clientUrl, PORT } from "./helper/config";
+import { clientUrl, imgUploadPath, PORT } from "./helper/config";
 import cors from "cors";
 import { TestRouter } from "./routers/TestRouter";
 import { UserRouter } from "./routers/UserRouter";
@@ -19,7 +19,8 @@ import { CartRouter } from "./routers/CartRouter";
 import { StoreBranchRouter } from "./routers/StoreBranchRouter";
 import { AdminRouter } from "./routers/AdminRouter";
 import { StockRouter } from "./routers/StockRouter";
-const cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
+import { TransactionRouter } from "./routers/TransactionRouter";
 
 export class App {
   private app: Express;
@@ -39,8 +40,8 @@ export class App {
     this.app.use(
       cors({
         origin: clientUrl,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", ""],
         credentials: true,
       })
     );
@@ -60,19 +61,9 @@ export class App {
     const storeBranchRouter = new StoreBranchRouter();
     const adminRouter = new AdminRouter();
     const stockRouter = new StockRouter();
+    const transactionRouter = new TransactionRouter();
 
-    this.app.use(
-      "/api/media/users",
-      express.static(__dirname + "/images/users")
-    );
-    this.app.use(
-      "/api/media/products",
-      express.static(__dirname + "/images/products")
-    );
-    this.app.use(
-      "/api/media/categories",
-      express.static(__dirname + "/images/categories")
-    );
+    this.app.use("/api/media", express.static(imgUploadPath));
     this.app.use("/api/test", router.getRouter());
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());
@@ -83,6 +74,7 @@ export class App {
     this.app.use("/api/store-branch", storeBranchRouter.getRouter());
     this.app.use("/api/admin", adminRouter.getRouter());
     this.app.use("/api/stock", stockRouter.getRouter());
+    this.app.use("/api/transactions", transactionRouter.getRouter());
   }
 
   private handleNotFound(): void {

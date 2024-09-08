@@ -8,15 +8,16 @@ const secretKeyRefreshToken: Secret = process.env.JWT_SECRET_REFRESH_TOKEN!;
 interface PayloadToken {
   id: number;
   isSuper?: boolean;
+  email?: string;
 }
 
 export const createToken = (data: PayloadToken) => {
-  const expiresIn = "1d";
+  const expiresIn = "15m";
   return jwt.sign(data, secretKey, { expiresIn });
 };
 
 export const createRefreshToken = (data: {}) => {
-  const expiresIn = "1d";
+  const expiresIn = "24h";
   return jwt.sign({ data }, secretKeyRefreshToken, { expiresIn });
 };
 
@@ -40,7 +41,7 @@ export const verifyToken = (
     if (decoded.isSuper !== undefined) {
       req.admin = { id: decoded.id, isSuper: decoded.isSuper };
     } else {
-      req.user = { id: decoded.id };
+      req.user = { id: decoded.id, email: decoded.email };
     }
 
     next();

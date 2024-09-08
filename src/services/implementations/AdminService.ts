@@ -3,6 +3,7 @@ import { hashPassword } from "../../helper/bcrypt";
 import { excludeFields } from "../../helper/excludeFields";
 import { AdminRepository } from "../../repository/prisma/AdminRepository";
 import { IAdmin } from "../../types/admin.type";
+import { IResponse } from "../../types/general.type";
 import { IAdminService } from "../interfaces/IAdminService";
 
 export class AdminService implements IAdminService {
@@ -28,18 +29,29 @@ export class AdminService implements IAdminService {
     }
   }
 
-  public async getService(isSuper: boolean): Promise<IAdmin[]> {
+  public async getService(
+    isSuper: boolean,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<IAdmin>> {
     try {
       if (!isSuper) {
         throw new ApiError("Unauthorized", 401);
       }
-      const data = await this.adminRepository.get();
-      return data;
+      const skip = (page - 1) * pageSize;
+      const data = await this.adminRepository.get(skip, pageSize);
+      const total:any = await this.adminRepository.count()
+
+      return {
+        total,
+        skip,
+        limit: pageSize,
+        data,
+      };
     } catch (error) {
       throw error;
     }
   }
-
 
   public async getCurrentService(id: number): Promise<IAdmin> {
     try {
@@ -56,11 +68,12 @@ export class AdminService implements IAdminService {
   }
 
   public async updateService(
-    id: number,
+    id: number,  
     admin: IAdmin,
     isSuper: boolean
   ): Promise<IAdmin> {
     try {
+      
       if (!isSuper) {
         throw new ApiError("Unauthorized", 401);
       }

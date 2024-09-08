@@ -30,7 +30,13 @@ export class AdminController {
   ): Promise<void> {
     try {
       const isSuper = req.admin?.isSuper;
-      const data = await this.adminService.getService(isSuper as boolean);
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
+      const data = await this.adminService.getService(
+        isSuper as boolean,
+        page,
+        pageSize
+      );
       res.status(200).json({
         data,
       });
@@ -53,10 +59,10 @@ export class AdminController {
 
   public async updateAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.user?.id;
+      const id = req.params.id;
       const isSuper = req.admin?.isSuper;
       const data = await this.adminService.updateService(
-        id as number,
+        parseInt(id, 0),
         req.body,
         isSuper as boolean
       );
@@ -70,10 +76,10 @@ export class AdminController {
 
   public async deleteAdmin(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.user?.id;
+      const id = req.params.id;
       const isSuper = req.admin?.isSuper;
       const data = await this.adminService.deleteService(
-        id as number,
+        parseInt(id, 0),
         isSuper as boolean
       );
       res.status(200).json({

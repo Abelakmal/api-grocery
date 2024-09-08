@@ -4,6 +4,7 @@ import { ApiError } from "../../error/ApiError";
 import { hashPassword } from "../../helper/bcrypt";
 import { excludeFields } from "../../helper/excludeFields";
 import { UserRepository } from "../../repository/prisma/UserRepository";
+import { baseURL } from "../../helper/config";
 
 export class UserService implements IUserService {
   private userRepository: UserRepository;
@@ -19,8 +20,14 @@ export class UserService implements IUserService {
         throw new ApiError("Email already exists", 400);
       }
 
-      if(user.dob){
-        user.dob = new Date(user.dob)
+      const checkPhone = await this.userRepository.getUserByPhone(user.phone);
+
+      if (checkPhone) {
+        throw new ApiError("Phone already exists", 400);
+      }
+
+      if (user.dob) {
+        user.dob = new Date(user.dob);
       }
 
       user.password = await hashPassword(user.password);
@@ -58,8 +65,10 @@ export class UserService implements IUserService {
         throw new ApiError("Email is already in use", 409);
       }
 
-      if (data.password) {
-        data.password = await hashPassword(data.password);
+      const checkPhone = await this.userRepository.getUserByPhone(data.phone);
+
+      if (checkPhone && data.phone !== user.phone) {
+        throw new ApiError("Phone already exists", 400);
       }
 
       const update: IUser = await this.userRepository.updateUserById(id, data);
@@ -79,9 +88,28 @@ export class UserService implements IUserService {
         throw new ApiError("User Id is not found", 404);
       }
 
-      const image = `${process.env.API_URL}/media/users/${img}`;
+      const image = `${baseURL}/media/${img}`;
       user.image = image;
       await this.userRepository.updateUserById(id, user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updatePasswordService(
+    email: string,
+    password: string
+  ): Promise<void> {
+    try {
+      const checkEmail = await this.userRepository.getUserByEmail(email);
+
+      if (!checkEmail) {
+        throw new ApiError("Email is not found", 404);
+      }
+
+      password = await hashPassword(password);
+
+      await this.userRepository.updatePassword(email, password);
     } catch (error) {
       throw error;
     }

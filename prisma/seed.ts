@@ -19,6 +19,23 @@ async function main() {
       },
     });
   }
+
+  const check_branch = await prisma.storeBranch.findMany({
+    where: {
+      name: "admin",
+    },
+  });
+
+  if (check_branch.length < 1) {
+    await prisma.storeBranch.create({
+      data: {
+        name: "admin",
+        location: "Jakarta Pusat",
+        latitude: "-6.186486",
+        longitude: "106.834091",
+      },
+    });
+  }
 }
 
 main();

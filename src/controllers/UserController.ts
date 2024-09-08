@@ -51,12 +51,26 @@ export class UserController {
   }
   public async updateImg(req: Request, res: Response, next: NextFunction) {
     try {
- 
       if (!req.file) {
         throw new ApiError("must fill image", 400);
       }
 
-      await this.userService.updateImgService(req.user?.id as number, req.file.filename)
+      await this.userService.updateImgService(
+        req.user?.id as number,
+        req.file.filename
+      );
+      res.status(200).json({
+        data: "ok",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async updatePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const email = req.user?.email || "";
+      await this.userService.updatePasswordService(email, req.body.password);
       res.status(200).json({
         data: "ok",
       });
