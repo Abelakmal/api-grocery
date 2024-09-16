@@ -15,7 +15,7 @@ export class CategoryRepository {
         data,
       });
     } catch (error) {
-      if(pathImg){
+      if (pathImg) {
         fs.unlinkSync(pathImg);
       }
       throw error;
@@ -24,7 +24,11 @@ export class CategoryRepository {
 
   public async get(): Promise<ICategory[]> {
     try {
-      const result = await this.prisma.category.findMany({});
+      const result = await this.prisma.category.findMany({
+        include: {
+          products: true,
+        },
+      });
       return result;
     } catch (error) {
       throw error;
@@ -38,7 +42,7 @@ export class CategoryRepository {
           id,
         },
         include: {
-          products:true
+          products: true,
         },
       });
       return data;

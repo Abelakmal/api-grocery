@@ -60,12 +60,21 @@ export class TransactionRepository {
     }
   }
 
-  public async getTransactions(status: transactions_status | undefined) {
+  public async getTransactions(
+    status: transactions_status | undefined,
+    user_id: number
+  ) {
     try {
       let where = {};
       if (status) {
         where = {
           status,
+        };
+      }
+      if (user_id) {
+        where = {
+          ...where,
+          userId: user_id,
         };
       }
 
@@ -116,19 +125,94 @@ export class TransactionRepository {
     }
   }
 
-  public async getTransactionsByIdStore(id_store: number) {
+  public async getTransactionsByIdStore(
+    id_store: number,
+    search: string,
+    skip: number,
+    take: number,
+    status_tx: transactions_status | undefined
+  ) {
     try {
-      const data = await this.prisma.transactionsItem.findMany({
-        where: {
-          stock: {
-            storeBranch: {
-              id: id_store,
+      let AND: [] | any = [
+        {
+          transactions_items: {
+            every: {
+              stock: {
+                branchId: id_store,
+              },
             },
           },
         },
+      ];
+      let transactions_items = {};
+      let status;
+      if (search) {
+        transactions_items = {
+          every: {
+            stock: {
+              product: {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          },
+        };
+        AND.push({ transactions_items });
+      }
+
+      if (status_tx) {
+        status = status_tx;
+      }
+      const data = await this.prisma.transaction.findMany({
+        where: {
+          AND,
+          status,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
         include: {
-          transactions: true,
-          stock: true,
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          transactions_items: {
+            include: {
+              stock: {
+                include: {
+                  product: true,
+                  storeBranch: true,
+                  transactionItem: true,
+                },
+              },
+            },
+          },
+        },
+        skip,
+        take,
+      });
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async countByIdStore(id: number): Promise<number> {
+    try {
+      const data = await this.prisma.transaction.count({
+        where: {
+          transactions_items: {
+            every: {
+              stock: {
+                branchId: id,
+              },
+            },
+          },
         },
       });
       return data;
