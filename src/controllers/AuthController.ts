@@ -96,7 +96,6 @@ export class AuthController {
 
   public async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("ok");
 
       res.clearCookie("refreshToken", {
         httpOnly: true,

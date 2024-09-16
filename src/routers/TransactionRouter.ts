@@ -14,6 +14,13 @@ export class TransactionRouter {
 
   private initializeRouters(): void {
     this.router.get(
+      "/:storeId/store",
+      verifyToken,
+      this.transactionController.getTransactionByStore.bind(
+        this.transactionController
+      )
+    );
+    this.router.get(
       "/",
       verifyToken,
       this.transactionController.getTransactions.bind(

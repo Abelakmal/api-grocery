@@ -16,6 +16,7 @@ import { checkPayMethod } from "../../helper/checkPayMethod";
 import { PENDING_PAYMENT } from "../../helper/constant";
 import { transactions_status } from "@prisma/client";
 import { updateStatusInMidtrans } from "../../helper/midtrans";
+import { IResponse } from "../../types/general.type";
 
 export class TransactionService implements ITransactionService {
   private cartRepository: CartRepository;
@@ -133,10 +134,11 @@ export class TransactionService implements ITransactionService {
   }
 
   public async getTransactionsService(
-    status: transactions_status | undefined
+    status: transactions_status | undefined,
+    user_id: number
   ): Promise<ITransaction[]> {
     try {
-      const data = this.transactionRepository.getTransactions(status);
+      const data = this.transactionRepository.getTransactions(status, user_id);
 
       return data;
     } catch (error) {
@@ -235,6 +237,35 @@ export class TransactionService implements ITransactionService {
           data
         );
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getTransactionsByIdStoreService(
+    status: transactions_status | undefined,
+    storeId: number,
+    search: string,
+    page: number,
+    pageSize: number
+  ): Promise<IResponse<ITransaction>> {
+    try {
+      const skip = (page - 1) * pageSize;
+      const total = await this.transactionRepository.countByIdStore(storeId);
+      const data = await this.transactionRepository.getTransactionsByIdStore(
+        storeId,
+        search,
+        skip,
+        pageSize,
+        status
+      );
+
+      return {
+        data,
+        limit: pageSize,
+        skip,
+        total,
+      };
     } catch (error) {
       throw error;
     }

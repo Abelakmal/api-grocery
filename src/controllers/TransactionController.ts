@@ -36,9 +36,11 @@ export class TransactionController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const {  status } = req.query;
+      const { status } = req.query;
+      const id = req.user?.id;
       const data = await this.transactionService.getTransactionsService(
         status as transactions_status | undefined,
+        id as number
       );
       res.status(200).json({
         data,
@@ -80,6 +82,32 @@ export class TransactionController {
       });
     } catch (error) {
       console.error(error);
+      next(error);
+    }
+  }
+
+  public async getTransactionByStore(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { status, search } = req.query;
+      const { storeId } = req.params;
+      const page = parseInt(req.query.page as string, 0) || 1;
+      const pageSize = parseInt(req.query.pageSize as string, 0) || 10;
+      const data =
+        await this.transactionService.getTransactionsByIdStoreService(
+          status as transactions_status,
+          parseInt(storeId, 0),
+          search as string,
+          page,
+          pageSize
+        );
+      res.status(200).json({
+        data,
+      });
+    } catch (error) {
       next(error);
     }
   }
